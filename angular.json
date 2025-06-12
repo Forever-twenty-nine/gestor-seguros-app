@@ -10,6 +10,7 @@
           "skipTests": true
         },
         "@schematics/angular:component": {
+          "style": "none",
           "skipTests": true
         },
         "@schematics/angular:directive": {
@@ -106,5 +107,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "165d406f-4f8a-4c74-95d6-15df2d54f7ed"
   }
 }

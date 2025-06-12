@@ -1,0 +1,41 @@
+<!-- dashboard-layout.component.html -->
+<div class="flex min-h-screen bg-gray-50 text-gray-800">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white shadow-md border-r hidden md:flex flex-col p-4">
+    <div class="text-2xl font-bold mb-8 text-blue-600">
+      SegurosApp
+    </div>
+    <nav class="flex flex-col gap-2">
+      <a routerLink="/" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
+         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
+        🏠 <span>Inicio</span>
+      </a>
+      <a routerLink="/clientes" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
+         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
+        👥 <span>Clientes</span>
+      </a>
+      <a routerLink="/polizas" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
+         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
+        📄 <span>Pólizas</span>
+      </a>
+      <a routerLink="/siniestros" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
+         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
+        ⚠️ <span>Siniestros</span>
+      </a>
+      <a routerLink="/alertas" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
+         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
+        🔔 <span>Alertas</span>
+      </a>
+      <a routerLink="/perfil" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
+         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
+        ⚙️ <span>Perfil</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
