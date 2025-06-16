@@ -14,7 +14,7 @@ export class UserService {
     // Simula login y carga del usuario
     loginMock() {
         const userMock: User = {
-            uid: 'u123',
+            id: 'u123',
             email: 'admin@empresa.com',
             nombre: 'Admin Principal',
             rol: 'admin',

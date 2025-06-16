@@ -1,0 +1,118 @@
+<div class="bg-white rounded-2xl shadow ring-1 ring-gray-200 overflow-hidden">
+
+    <!-- 🔍 Buscador y botón nuevo -->
+    <div
+        class="p-4 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        @if (enableSearch) {
+        <input type="text" (input)="onSearch($event)" placeholder="Buscar..."
+            class="w-full sm:max-w-xs px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200" />
+        }
+
+        @if (showNuevo) {
+        <button (click)="onNuevo()"
+            class="self-end sm:self-auto px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+            {{ nuevoLabel }}
+        </button>
+        }
+    </div>
+
+    <!-- 📄 Tabla -->
+    <div class="min-w-full overflow-x-auto">
+        <div class="min-w-[500px]">
+
+            <!-- 🧁 Tabla modo escritorio -->
+            <div class="hidden sm:block">
+                @if (paginatedRows().length > 0) {
+                <!-- Encabezado -->
+                <div class="grid gap-4 px-4 py-2 bg-gray-100 text-sm font-semibold text-gray-600 uppercase tracking-wide"
+                    [ngClass]="'grid-cols-' + (displayedColumns.length + (actions.length > 0 ? 1 : 0))">
+                    @for (header of headers; track header) {
+                    <div>{{ header }}</div>
+                    }
+                    @if (actions.length > 0) {
+                    <div class="text-center">Acciones</div>
+                    }
+                </div>
+            
+                <!-- Filas -->
+                @for (row of paginatedRows(); track row.id) {
+                <div class="grid gap-4 px-4 py-3 text-sm border-b border-gray-100 items-center hover:bg-gray-50 transition"
+                    [ngClass]="'grid-cols-' + (displayedColumns.length + (actions.length > 0 ? 1 : 0))">
+                    @for (col of displayedColumns; track col) {
+                    <div class="truncate text-gray-800">{{ row[col] ?? '' }}</div>
+                    }
+                    @if (actions.length > 0) {
+                    <div class="flex justify-center items-center gap-2">
+                        @for (action of actions; track action) {
+                        <button (click)="onAction(action, row)" class="px-3 py-1 rounded-full text-xs font-semibold transition"
+                            [ngClass]="{
+                              'bg-blue-100 text-blue-800 hover:bg-blue-200': action === 'ver',
+                              'bg-green-100 text-green-800 hover:bg-green-200': action === 'editar',
+                              'bg-red-100 text-red-800 hover:bg-red-200': action === 'eliminar'
+                            }">
+                            {{ action | titlecase }}
+                        </button>
+                        }
+                    </div>
+                    }
+                </div>
+                }
+                } @else {
+                <div class="text-center py-6 text-gray-500 text-sm">
+                    Sin datos disponibles.
+                </div>
+                }
+            </div>
+            
+            <!-- 📱 Vista móvil estilo tarjetas -->
+            <div class="sm:hidden divide-y divide-gray-100">
+                @if (paginatedRows().length > 0) {
+                @for (row of paginatedRows(); track row.id) {
+                <div class="px-4 py-3 text-sm text-gray-800">
+                    @for (col of displayedColumns; track col) {
+                    <div class="mb-1">
+                        <span class="font-semibold text-gray-500 block">{{ headers[displayedColumns.indexOf(col)] }}</span>
+                        <span>{{ row[col] ?? '' }}</span>
+                    </div>
+                    }
+                    @if (actions.length > 0) {
+                    <div class="mt-2 flex gap-2">
+                        @for (action of actions; track action) {
+                        <button (click)="onAction(action, row)" class="px-3 py-1 rounded-full text-xs font-semibold transition"
+                            [ngClass]="{
+                              'bg-blue-100 text-blue-800 hover:bg-blue-200': action === 'ver',
+                              'bg-green-100 text-green-800 hover:bg-green-200': action === 'editar',
+                              'bg-red-100 text-red-800 hover:bg-red-200': action === 'eliminar'
+                            }">
+                            {{ action | titlecase }}
+                        </button>
+                        }
+                    </div>
+                    }
+                </div>
+                }
+                }
+            </div>
+  
+  
+        </div>
+    </div>
+
+    <!-- 📄 Paginación -->
+    <div class="flex justify-between items-center px-4 py-3 border-t border-gray-100 text-sm bg-gray-50">
+        <div class="text-gray-500">
+            Página {{ currentPage() }} de {{ totalPages() }}
+        </div>
+        <div class="flex gap-2">
+            <button (click)="changePage(-1)" [disabled]="currentPage() === 1"
+                class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-50">
+                ← Anterior
+            </button>
+            <button (click)="changePage(1)" [disabled]="currentPage() === totalPages()"
+                class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-50">
+                Siguiente →
+            </button>
+        </div>
+    </div>
+</div>
+  

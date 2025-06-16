@@ -1,0 +1,122 @@
+import { Component, Input, Output, EventEmitter, computed, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-table',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './table.html',
+})
+export class Table {
+  // ----------------------------------------
+  // 📥 Inputs configurables desde el padre
+  // ----------------------------------------
+
+  /** Encabezados visibles en la tabla */
+  @Input() headers: string[] = [];
+
+  /** Claves de los datos a mostrar en cada fila */
+  @Input() displayedColumns: string[] = [];
+
+  /** Datos a mostrar (array de objetos) */
+  private _rows = signal<any[]>([]);
+
+  @Input()
+  set rows(value: any[]) {
+    this._rows.set([...value]); // fuerza nueva referencia en signal interno
+  }
+
+  get rows() {
+    return this._rows();
+  }
+
+  /** Acciones habilitadas por fila: ['ver', 'editar', 'eliminar'] */
+  @Input() actions: string[] = [];
+
+  /** Tamaño de página para paginación */
+  @Input() pageSize = 10;
+
+  /** Habilita el input de búsqueda */
+  @Input() enableSearch = true;
+
+  /** Muestra botón “Nuevo” arriba */
+  @Input() showNuevo = false;
+
+  /** Texto del botón “Nuevo” */
+  @Input() nuevoLabel = 'Nuevo registro';
+
+  // ----------------------------------------
+  // 📤 Eventos hacia el componente padre
+  // ----------------------------------------
+
+  /** Al hacer click en el botón "Nuevo" */
+  @Output() nuevoClick = new EventEmitter<void>();
+
+  /** Cuando se ejecuta una acción sobre una fila */
+  @Output() actionClick = new EventEmitter<{ action: string; row: any }>();
+
+  // ----------------------------------------
+  // 🧠 Signals reactivos para estado interno
+  // ----------------------------------------
+
+  /** Página actual */
+  currentPage = signal(1);
+
+  /** Valor de búsqueda */
+  searchQuery = signal('');
+
+  /** Total de páginas según resultados filtrados */
+  totalPages = computed(() =>
+    Math.ceil(this.filteredRows().length / this.pageSize)
+  );
+
+  /** Filtro de búsqueda aplicado sobre las filas */
+  filteredRows = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+    const data = this._rows(); // ← usar signal interno
+
+    if (!query) return data;
+
+    return data.filter(row =>
+      this.displayedColumns.some(col =>
+        String(row[col] ?? '').toLowerCase().includes(query)
+      )
+    );
+  });
+  
+
+  /** Fila visibles según página actual */
+  paginatedRows = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize;
+    return this.filteredRows().slice(start, start + this.pageSize);
+  });
+
+  // ----------------------------------------
+  // 🧩 Métodos de interacción
+  // ----------------------------------------
+
+  /** Cambiar página hacia adelante o atrás */
+  changePage(delta: number) {
+    const next = this.currentPage() + delta;
+    if (next >= 1 && next <= this.totalPages()) {
+      this.currentPage.set(next);
+    }
+  }
+
+  /** Ejecutar acción desde botón en fila */
+  onAction(action: string, row: any) {
+    this.actionClick.emit({ action, row });
+  }
+
+  /** Emitir evento al presionar “Nuevo” */
+  onNuevo() {
+    this.nuevoClick.emit();
+  }
+
+  /** Actualizar búsqueda reactiva */
+  onSearch(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(value);
+    this.currentPage.set(1); // volver a la primera página al buscar
+  }
+}

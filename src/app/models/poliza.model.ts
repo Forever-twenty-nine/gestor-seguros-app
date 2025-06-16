@@ -9,4 +9,5 @@ export interface Poliza {
     estado: 'vigente' | 'por vencer' | 'vencida';
     adjuntos?: string[];
     empresaId: string;
+    numero:string;
 }

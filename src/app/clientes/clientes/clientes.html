@@ -1,1 +1,28 @@
-<p>clientes works!</p>
+<!-- Encabezado y botón agregar -->
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-xl font-bold">Clientes</h1>
+</div>
+<!-- Tabla -->
+<app-table [headers]="columnas" [displayedColumns]="campos" [rows]="clientes()" [actions]="acciones"
+    [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nuevo cliente'" [pageSize]="10"
+    (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)"></app-table>
+
+
+<!-- Modal de detalle -->
+<app-table-detail *ngIf="clienteSeleccionado" [item]="clienteSeleccionado" title="Detalle del Cliente"
+    (cerrar)="cerrarDetalle()" />
+
+<!-- Modal de formulario -->
+@if (formularioVisible) {
+<app-table-form [title]="modoEdicion ? 'Editar Cliente' : 'Nuevo Cliente'"
+    [textGuardar]="modoEdicion ? 'Guardar cambios' : 'Crear cliente'" [textCancelar]="'Cancelar'" [showGuardar]="true"
+    [disableGuardar]="clienteForm.invalid" [form]="clienteForm" [fields]="formFields" (cerrar)="cerrarFormulario()"
+    (guardar)="guardarFormulario()" />
+
+}
+<!-- Confirmación de eliminación -->
+@if(clienteParaEliminar){
+<app-table-confirm title="¿Eliminar cliente?"
+    [message]="'¿Estás seguro de eliminar a ' + clienteParaEliminar.nombre + '?'" textCancelar="Cancelar"
+    textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()" (confirmar)="confirmarEliminacion()" />
+}

@@ -1,1 +1,29 @@
-<p>polizas works!</p>
+<!-- Encabezado -->
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-xl font-bold">Pólizas</h1>
+</div>
+
+<!-- Tabla -->
+<app-table [headers]="columnas" [displayedColumns]="campos" [rows]="polizas()" [actions]="acciones"
+    [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nueva póliza'" [pageSize]="10"
+    (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)" />
+
+<!-- Detalle -->
+<app-table-detail *ngIf="polizaSeleccionada" [item]="polizaSeleccionada" title="Detalle de la póliza"
+    (cerrar)="cerrarDetalle()" />
+
+<!-- Formulario -->
+@if (formularioVisible) {
+<app-table-form [title]="modoEdicion ? 'Editar Póliza' : 'Nueva Póliza'"
+    [textGuardar]="modoEdicion ? 'Guardar cambios' : 'Crear póliza'" [textCancelar]="'Cancelar'" [showGuardar]="true"
+    [disableGuardar]="form.invalid" [form]="form" [fields]="formFields" (cerrar)="cerrarFormulario()"
+    (guardar)="guardarFormulario()" />
+}
+
+<!-- Confirmar eliminación -->
+@if (polizaParaEliminar) {
+<app-table-confirm title="¿Eliminar póliza?"
+    [message]="'¿Estás seguro de eliminar la póliza ' + polizaParaEliminar.numero" textCancelar="Cancelar"
+    textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()" (confirmar)="confirmarEliminacion()" />
+}
+  

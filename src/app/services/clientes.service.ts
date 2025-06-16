@@ -1,56 +1,42 @@
 import { Injectable, signal } from '@angular/core';
 import { Cliente } from '../models/cliente.model';
+import { CLIENTES_MOCK } from '../mocks/clientes.mock';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ClientesService {
+    // Signal reactivo privado
     private _clientes = signal<Cliente[]>([]);
 
-    // Observable readonly para usar en componentes
+    // Signal público de solo lectura para los componentes
     get clientes() {
         return this._clientes.asReadonly();
     }
 
-    // Cargar datos simulados (mock)
+    // Cargar datos simulados
     cargarMockData() {
-        const data: Cliente[] = [
-            {
-                id: '1',
-                nombre: 'Juan Pérez',
-                dniCuit: 20300111222,
-                telefono: 1123456789,
-                email: 'juan@example.com',
-                direccion: 'Calle Falsa 123',
-                empresaId: 'empresa1'
-            },
-            {
-                id: '2',
-                nombre: 'María Gómez',
-                dniCuit: 27333444555,
-                telefono: 1134567890,
-                email: 'maria@example.com',
-                direccion: 'Av. Siempreviva 742',
-                empresaId: 'empresa1'
-            }
-        ];
-        this._clientes.set(data);
+        this._clientes.set([...CLIENTES_MOCK]);
     }
 
-    // Agregar cliente
+    // Agrega un nuevo cliente al listado
     agregarCliente(cliente: Cliente) {
         this._clientes.update(clientes => [...clientes, cliente]);
     }
 
-    // Eliminar cliente por ID
+    // Elimina un cliente por su ID
     eliminarCliente(id: string) {
-        this._clientes.update(clientes => clientes.filter(c => c.id !== id));
+        this._clientes.update(clientes =>
+            clientes.filter(c => c.id !== id)
+        );
     }
 
-    // Actualizar cliente
+    // Actualiza los datos de un cliente existente
     actualizarCliente(cliente: Cliente) {
         this._clientes.update(clientes =>
-            clientes.map(c => c.id === cliente.id ? cliente : c)
+            clientes.map(c =>
+                c.id === cliente.id ? { ...cliente } : { ...c } // Clonar todos para asegurar reactividad
+            )
         );
     }
 }
