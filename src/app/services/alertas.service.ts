@@ -1,9 +1,9 @@
 import { Injectable, signal } from '@angular/core';
 import { Alerta } from '../models/alerta.model';
+import { ALERTAS_MOCK } from '../mocks/alertas.mock';
 
-@Injectable({
-    providedIn: 'root',
-})
+
+@Injectable({ providedIn: 'root' })
 export class AlertasService {
     private _alertas = signal<Alerta[]>([]);
 
@@ -11,31 +11,9 @@ export class AlertasService {
         return this._alertas.asReadonly();
     }
 
-    cargarMockData() {
-        const data: Alerta[] = [
-            {
-                id: 'a1',
-                tipo: 'vencimiento',
-                fechaProgramada: new Date('2025-01-01'),
-                clienteId: '1',
-                polizaId: 'p1',
-                empresaId: 'empresa1',
-                estado: 'pendiente',
-                origen: 'auto',
-            },
-            {
-                id: 'a2',
-                tipo: 'siniestro',
-                fechaProgramada: new Date('2024-12-20'),
-                clienteId: '2',
-                polizaId: 'p2',
-                empresaId: 'empresa1',
-                estado: 'atendida',
-                origen: 'manual',
-            }
-        ];
-        this._alertas.set(data);
-    }
+    constructor() {
+        this._alertas.set(ALERTAS_MOCK);
+      }
 
     agregarAlerta(alerta: Alerta) {
         this._alertas.update(alertas => [...alertas, alerta]);
@@ -47,7 +25,11 @@ export class AlertasService {
 
     actualizarAlerta(alerta: Alerta) {
         this._alertas.update(alertas =>
-            alertas.map(a => a.id === alerta.id ? alerta : a)
+            alertas.map(a => (a.id === alerta.id ? { ...alerta } : a))
         );
+    }
+
+    getPorCliente(clienteId: string) {
+        return this._alertas().filter(a => a.clienteId === clienteId);
     }
 }

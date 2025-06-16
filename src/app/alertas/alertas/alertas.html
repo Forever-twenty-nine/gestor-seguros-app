@@ -1,1 +1,30 @@
-<p>alertas works!</p>
+<!-- Encabezado -->
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-xl font-bold">Alertas</h1>
+</div>
+
+<!-- Tabla -->
+<app-table [headers]="columnas" [displayedColumns]="campos" [rows]="alertas()" [actions]="acciones"
+    [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nueva alerta'" [pageSize]="10" [fieldTypes]="fieldTypes"
+    (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)"></app-table>
+
+<!-- Detalle -->
+@if (alertaSeleccionada) {
+<app-table-detail [item]="alertaSeleccionada" title="Detalle de la alerta" entity="alerta" (cerrar)="cerrarDetalle()" />
+}
+
+<!-- Formulario -->
+@if (formularioVisible) {
+<app-table-form [title]="modoEdicion ? 'Editar alerta' : 'Nueva alerta'"
+    [textGuardar]="modoEdicion ? 'Guardar cambios' : 'Crear alerta'" [textCancelar]="'Cancelar'" [showGuardar]="true"
+    [disableGuardar]="alertaForm.invalid" [form]="alertaForm" [fields]="formFields" (cerrar)="cerrarFormulario()"
+    (guardar)="guardarFormulario()" />
+}
+
+<!-- Confirmación de eliminación -->
+@if (alertaParaEliminar) {
+<app-table-confirm title="¿Eliminar alerta?"
+    [message]="'¿Estás seguro de eliminar la alerta de tipo ' + alertaParaEliminar.tipo + '?'" textCancelar="Cancelar"
+    textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()" (confirmar)="confirmarEliminacion()" />
+}
+  

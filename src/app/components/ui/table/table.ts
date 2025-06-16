@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, computed, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed, signal ,inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { formatearFechaHoraLocal } from '../../../utils/form-utils';
+import { ClientesService } from '../../../services/clientes.service';
 
 @Component({
   selector: 'app-table',
@@ -9,6 +10,11 @@ import { formatearFechaHoraLocal } from '../../../utils/form-utils';
 })
 
 export class Table {
+
+  /** Servicio de clientes para obtener nombres */
+  private clientesService = inject(ClientesService);
+
+
 
   /** Encabezados visibles en la tabla */
   @Input() headers: string[] = [];
@@ -39,6 +45,19 @@ export class Table {
 
     return value ?? '—';
   }
+
+  getValorFormateado(field: string, value: any): string {
+    if (field === 'clienteId') {
+      return this.clientesService.getClienteNombrePorId(value) || 'Sin cliente';
+    }
+
+    if (field.includes('fecha') || this.fieldTypes[field] === 'datetime') {
+      return formatearFechaHoraLocal(value);
+    }
+
+    return value ?? '—';
+  }
+  
 
   /** Acciones habilitadas por fila: ['ver', 'editar', 'eliminar'] */
   @Input() actions: string[] = [];

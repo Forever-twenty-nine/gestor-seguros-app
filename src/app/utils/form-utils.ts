@@ -1,5 +1,5 @@
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-
+// Definición de los metadatos de los campos del formulario
 export interface FieldMeta {
     name: string;
     label: string;
@@ -8,10 +8,7 @@ export interface FieldMeta {
     options?: string[] | { label: string; value: string }[];
     placeholder?: string;
     readonly?: boolean;
-
-
 }
-
 // Podés usar esto directamente o copiar en el componente específico
 export const camposCliente: FieldMeta[] = [
     { name: 'nombre', label: 'Nombre', type: 'text', validators: [Validators.required] },
@@ -20,7 +17,6 @@ export const camposCliente: FieldMeta[] = [
     { name: 'email', label: 'Email', type: 'email', validators: [Validators.required, Validators.email] },
     { name: 'direccion', label: 'Dirección', type: 'text', validators: [Validators.required] },
 ];
-
 // Campos para el formulario de póliza
 export const camposPoliza: FieldMeta[] = [
     { name: 'clienteId', label: 'Cliente', type: 'select', validators: [Validators.required], readonly: true },
@@ -34,7 +30,6 @@ export const camposPoliza: FieldMeta[] = [
     { name: 'empresaId', label: 'Empresa', type: 'text', validators: [Validators.required] },
     { name: 'estado', label: 'Estado', type: 'text', validators: [Validators.required] }
 ];
-
 // Campos para el formulario de siniestro
 export const camposSiniestro: FieldMeta[] = [
     { name: 'clienteId', label: 'Cliente', type: 'select', validators: [Validators.required] },
@@ -46,7 +41,16 @@ export const camposSiniestro: FieldMeta[] = [
     { name: 'adjuntos', label: 'Adjuntos', type: 'file' },
     { name: 'empresaId', label: 'Empresa', type: 'hidden' }
 ];
-
+// Campos para el formulario de alerta
+export const camposAlerta: FieldMeta[] = [
+    { name: 'tipo', label: 'Tipo de alerta', type: 'select', options: ['vencimiento', 'siniestro'], validators: [Validators.required] },
+    { name: 'fechaProgramada', label: 'Fecha programada', type: 'datetime', validators: [Validators.required] },
+    { name: 'clienteId', label: 'Cliente', type: 'select', validators: [Validators.required] },
+    { name: 'polizaId', label: 'Póliza asociada', type: 'select' },
+    { name: 'estado', label: 'Estado', type: 'select', options: ['pendiente', 'atendida'], validators: [Validators.required] },
+    { name: 'origen', label: 'Origen', type: 'select', options: ['auto', 'manual'], validators: [Validators.required] },
+    { name: 'empresaId', label: 'Empresa', type: 'hidden' }
+];
 // Función para generar FormGroup desde los metadatos
 export function generateFormGroup(fb: FormBuilder, fields: FieldMeta[]): FormGroup {
     const group: any = {};
@@ -55,13 +59,11 @@ export function generateFormGroup(fb: FormBuilder, fields: FieldMeta[]): FormGro
     }
     return fb.group(group);
 }
-
 // Función para generar FormGroup desde los metadatos con valores iniciales
 export function getLabelFromFields(fields: FieldMeta[], key: string): string {
     const found = fields.find(f => f.name === key);
     return found?.label ?? key;
 }
-
 // 🔁 De modelo → valores para setear en form
 export function mapRowToForm<T = any>(row: Record<string, any>, form: FormGroup): { [K in keyof T]: any } {
     const result: any = {};
@@ -78,8 +80,6 @@ export function mapRowToForm<T = any>(row: Record<string, any>, form: FormGroup)
 
     return result;
 }
-  
-
 // 🔁 De form → modelo con fechas parseadas
 export function mapFormToModel(form: FormGroup): Record<string, any> {
     const raw = form.getRawValue();
@@ -98,9 +98,6 @@ export function mapFormToModel(form: FormGroup): Record<string, any> {
 
     return result;
 }
-  
-
-
 // Función para formatear fecha a string local
 export function formatearFechaHoraLocal(fecha: Date | string): string {
     const d = new Date(fecha);
@@ -112,6 +109,3 @@ export function formatearFechaHoraLocal(fecha: Date | string): string {
         minute: '2-digit',
     });
 }
-
-
-

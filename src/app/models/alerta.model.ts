@@ -1,8 +1,8 @@
 export interface Alerta {
-    id?: string;
+    id: string;
     tipo: 'vencimiento' | 'siniestro';
     fechaProgramada: Date;
-    clienteId?: string;
+    clienteId: string;
     polizaId?: string;
     empresaId: string;
     estado: 'pendiente' | 'atendida';
