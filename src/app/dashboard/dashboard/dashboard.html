@@ -1,1 +1,55 @@
-<p>dashboard works!</p>
+<div class="p-6 md:p-10 max-w-6xl mx-auto grid gap-8 text-gray-900">
+    <!-- Cards superiores con animación -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" @fadeSlide>
+        <div class="rounded-xl px-6 py-4 text-center shadow-lg bg-gradient-to-r from-green-400 to-green-600 text-white">
+            <h3 class="text-sm uppercase font-semibold tracking-wider">Activas</h3>
+            <p class="text-3xl font-bold">{{ activas() }}</p>
+        </div>
+        <div
+            class="rounded-xl px-6 py-4 text-center shadow-lg bg-gradient-to-r from-yellow-400 to-yellow-600 text-white">
+            <h3 class="text-sm uppercase font-semibold tracking-wider">Por vencer</h3>
+            <p class="text-3xl font-bold">{{ porVencer() }}</p>
+        </div>
+        <div class="rounded-xl px-6 py-4 text-center shadow-lg bg-gradient-to-r from-red-400 to-red-600 text-white">
+            <h3 class="text-sm uppercase font-semibold tracking-wider">Vencidas</h3>
+            <p class="text-3xl font-bold">{{ vencidas() }}</p>
+        </div>
+    </div>
+
+    <!-- Alertas pendientes -->
+    @if (clientesConAlertas().length > 0) {
+    <section @fadeSlide class="bg-white shadow rounded-xl p-4">
+        <div class="flex justify-between items-center mb-3">
+            <h2 class="text-base font-semibold text-gray-800">Alertas pendientes</h2>
+            <a routerLink="/alertas"
+                class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
+                Ver todas
+            </a>
+        </div>
+        <ul class="text-sm divide-y">
+            @for (cliente of clientesConAlertas().slice(0, 3); track cliente.id) {
+            <li class="py-2">{{ cliente.nombre }}</li>
+            }
+        </ul>
+    </section>
+    }
+
+    <!-- Siniestros activos -->
+    @if (clientesConSiniestros().length > 0) {
+    <section @fadeSlide class="bg-white shadow rounded-xl p-4">
+        <div class="flex justify-between items-center mb-3">
+            <h2 class="text-base font-semibold text-gray-800">Siniestros activos</h2>
+            <a routerLink="/siniestros"
+                class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
+                Ver todos
+            </a>
+        </div>
+        <ul class="text-sm divide-y">
+            @for (cliente of clientesConSiniestros().slice(0, 3); track cliente.id) {
+            <li class="py-2">{{ cliente.nombre }}</li>
+            }
+        </ul>
+    </section>
+    }
+</div>
+  

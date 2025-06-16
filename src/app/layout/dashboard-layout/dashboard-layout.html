@@ -1,41 +1,60 @@
-<!-- dashboard-layout.component.html -->
-<div class="flex min-h-screen bg-gray-50 text-gray-800">
-  <!-- Sidebar -->
-  <aside class="w-64 bg-white shadow-md border-r hidden md:flex flex-col p-4">
-    <div class="text-2xl font-bold mb-8 text-blue-600">
-      SegurosApp
-    </div>
-    <nav class="flex flex-col gap-2">
-      <a routerLink="/" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
-         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
-        🏠 <span>Inicio</span>
-      </a>
-      <a routerLink="/clientes" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
-         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
-        👥 <span>Clientes</span>
-      </a>
-      <a routerLink="/polizas" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
-         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
-        📄 <span>Pólizas</span>
-      </a>
-      <a routerLink="/siniestros" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
-         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
-        ⚠️ <span>Siniestros</span>
-      </a>
-      <a routerLink="/alertas" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
-         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
-        🔔 <span>Alertas</span>
-      </a>
-      <a routerLink="/perfil" routerLinkActive="bg-blue-100 text-blue-700 font-semibold"
-         class="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
-        ⚙️ <span>Perfil</span>
-      </a>
+<div class="flex min-h-screen bg-gray-50 text-gray-900">
+  <!-- Sidebar oscuro -->
+  <aside class="w-64 hidden md:flex flex-col bg-gray-800 text-white shadow-lg border-r border-gray-700 px-6 py-8"
+    @fadeIn>
+    <!-- Logo -->
+    <a routerLink="/" class="mb-12 block">
+      <img ngSrc="assets/logo-gestor-seguros-app.webp" width="200" height="60" alt="Logo Gestor Seguros App" priority
+        class="mx-auto object-contain" />
+    </a>
+
+    <!-- Navegación -->
+    <nav class="flex-1 flex flex-col justify-between">
+      <ul class="flex flex-col gap-4 text-base font-semibold text-white">
+        <li>
+          <a routerLink="/clientes" routerLinkActive="bg-gray-700"
+            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
+            Clientes
+          </a>
+        </li>
+        <li>
+          <a routerLink="/polizas" routerLinkActive="bg-gray-700"
+            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
+            Pólizas
+          </a>
+        </li>
+        <li>
+          <a routerLink="/siniestros" routerLinkActive="bg-gray-700"
+            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
+            Siniestros
+          </a>
+        </li>
+        <li>
+          <a routerLink="/alertas" routerLinkActive="bg-gray-700"
+            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
+            Alertas
+          </a>
+        </li>
+        <li>
+          <a routerLink="/perfil" routerLinkActive="bg-gray-700"
+            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
+            Perfil
+          </a>
+        </li>
+      </ul>
+
+      <!-- Perfil usuario (parte inferior) -->
+      <div class="mt-12 pt-4 border-t border-gray-700 text-center">
+        <p class="text-sm font-semibold">Juan Díaz</p>
+        <p class="text-xs text-gray-400">Agente de Seguros</p>
+      </div>
     </nav>
   </aside>
 
-  <!-- Main Content -->
-  <main class="flex-1 p-6">
-    <router-outlet></router-outlet>
+  <!-- Contenido principal -->
+  <main class="flex-1 p-6 md:p-10 overflow-y-auto" @fadeIn>
+    <div class="max-w-7xl mx-auto">
+      <router-outlet></router-outlet>
+    </div>
   </main>
 </div>
-
