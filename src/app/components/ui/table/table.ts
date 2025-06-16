@@ -83,6 +83,23 @@ export class Table {
       )
     );
   });
+
+  // ----------------------------------------
+  // 📐 Clases CSS para el grid según columna
+  // ----------------------------------------
+  gridClass = computed(() => {
+    const cols = this.displayedColumns.length + (this.actions.length > 0 ? 1 : 0);
+    return {
+      1: 'grid-cols-1',
+      2: 'grid-cols-2',
+      3: 'grid-cols-3',
+      4: 'grid-cols-4',
+      5: 'grid-cols-5',
+      6: 'grid-cols-6',
+      7: 'grid-cols-7',
+      8: 'grid-cols-8'
+    }[cols] || 'grid-cols-1';
+  });
   
 
   /** Fila visibles según página actual */

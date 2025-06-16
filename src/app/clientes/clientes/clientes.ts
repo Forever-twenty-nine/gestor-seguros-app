@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ClientesService } from '../../services/clientes.service';
 import { ToastService } from '../../services/toast.service';
 import { Cliente } from '../../models/cliente.model';
@@ -6,12 +6,16 @@ import { Table } from '../../components/ui/table/table';
 import { TableDetail } from '../../components/ui/table-detail/table-detail';
 // forms
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FieldMeta, camposCliente, generateFormGroup } from '../../utils/form-utils';
+import { FieldMeta, camposCliente, generateFormGroup,mapRowToForm } from '../../utils/form-utils';
 
 import { TableForm } from '../../components/ui/table-form/table-form';
 import { CommonModule } from '@angular/common';
 // table confirm
 import { TableConfirm } from '../../components/ui/table-confirm/table-confirm';
+// polizas
+import { PolizasService } from '../../services/polizas.service';
+import { Poliza } from '../../models/poliza.model';
+
 
 @Component({
   selector: 'app-clientes',
@@ -24,6 +28,11 @@ export class Clientes {
   private fb = inject(FormBuilder);
   private toast = inject(ToastService);
 
+  private polizasService = inject(PolizasService);
+
+  polizasDelCliente = signal<Poliza[]>([]);
+
+
   clientes = this.clientesService.clientes;
 
   columnas = ['Nombre', 'Teléfono', 'Email'];
@@ -33,14 +42,15 @@ export class Clientes {
   clienteSeleccionado: Cliente | null = null;
 
   constructor() {
-    this.clientesService.cargarMockData();
+    
   }
 
   modoEdicion = false;
-
+  // Controla la visibilidad del formulario
   formularioVisible = false;
+  // Campos del formulario, generados a partir de la configuración
   formFields: FieldMeta[] = camposCliente;
-
+  // Formulario reactivo para crear/editar clientes
   clienteForm = this.fb.group({
     ...generateFormGroup(this.fb, this.formFields).controls,
     id: this.fb.control(''),
@@ -51,9 +61,16 @@ export class Clientes {
   manejarAccion(event: { action: string; row: Cliente }) {
     if (event.action === 'ver') {
       this.clienteSeleccionado = event.row;
-    } else if (event.action === 'editar') {
+      this.polizasDelCliente.set(
+        this.polizasService.getPolizasPorCliente(event.row.id!)
+      );
+    }
+    else if (event.action === 'editar') {
       this.modoEdicion = true;
-      this.clienteForm.setValue({ ...event.row });
+      this.clienteForm.setValue(
+        mapRowToForm<Cliente>(event.row, this.clienteForm)
+      );
+      
       this.formularioVisible = true;
     } else if (event.action === 'eliminar') {
       this.abrirConfirmacionEliminar(event.row);
@@ -84,13 +101,18 @@ export class Clientes {
     }
     this.formularioVisible = false;
   }
-  
-
+  // Método para manejar las acciones de las pólizas
+  manejarAccionPoliza(event: { action: string, row: Poliza }) {
+    if (event.action === 'ver') {
+      this.toast.show('Ver póliza ' + event.row.tipoSeguro, 'info');
+      // En el futuro: abrir modal detalle de póliza
+    }
+  }
   // Método para cerrar el detalle del cliente
   cerrarDetalle() {
     this.clienteSeleccionado = null;
   }
-
+  // Variable para manejar la confirmación de eliminación
   clienteParaEliminar: Cliente | null = null;
   // Método para abrir la confirmación de eliminación
   abrirConfirmacionEliminar(cliente: Cliente) {
@@ -106,8 +128,5 @@ export class Clientes {
     this.toast.show('Cliente eliminado con éxito', 'success');
     this.clienteParaEliminar = null;
   }
-  
 
 }
-
-

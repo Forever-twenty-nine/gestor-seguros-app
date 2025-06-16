@@ -136,50 +136,5 @@ export const CLIENTES_MOCK: Cliente[] = [
         direccion: 'Tucumán 670',
         empresaId: 'empresa1'
     },
-    {
-        id: '16',
-        nombre: 'Tomás Vega',
-        dniCuit: 20945678912,
-        telefono: 1199998888,
-        email: 'tomas.vega@example.com',
-        direccion: 'Constitución 930',
-        empresaId: 'empresa1'
-    },
-    {
-        id: '17',
-        nombre: 'Brenda Salinas',
-        dniCuit: 27331222444,
-        telefono: 1156789001,
-        email: 'brenda.salinas@example.com',
-        direccion: 'Alberdi 1150',
-        empresaId: 'empresa1'
-    },
-    {
-        id: '18',
-        nombre: 'Gabriel Ortega',
-        dniCuit: 20112233445,
-        telefono: 1133445566,
-        email: 'gabriel.ortega@example.com',
-        direccion: 'French 200',
-        empresaId: 'empresa1'
-    },
-    {
-        id: '19',
-        nombre: 'Romina Carrizo',
-        dniCuit: 27777888999,
-        telefono: 1123450099,
-        email: 'romina.carrizo@example.com',
-        direccion: 'Ituzaingó 840',
-        empresaId: 'empresa1'
-    },
-    {
-        id: '20',
-        nombre: 'Agustín Giménez',
-        dniCuit: 20666778899,
-        telefono: 1199112233,
-        email: 'agustin.gimenez@example.com',
-        direccion: 'Perú 1300',
-        empresaId: 'empresa1'
-    }
-    // ... pegás el resto de los 20 registros acá ...
+    
 ];

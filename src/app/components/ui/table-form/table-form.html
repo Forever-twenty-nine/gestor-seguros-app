@@ -15,8 +15,25 @@
                 @for (campo of fields; track campo.name) {
                 <div>
                     <label class="block text-sm font-medium text-gray-700">{{ campo.label }}</label>
-                    <input [type]="campo.type || 'text'" [formControlName]="campo.name"
-                        [placeholder]="campo.placeholder || campo.label" class="w-full mt-1 input input-bordered" />
+                    @if (!campo.readonly) {
+                        @if (campo.name === 'empresaAseguradoraId') {
+                        <select [formControlName]="campo.name" class="w-full mt-1 input input-bordered">
+                            <option disabled value="">Seleccionar aseguradora</option>
+                            @for (a of aseguradoras(); track a.id) {
+                            <option [value]="a.id">{{ a.nombre }}</option>
+                            }
+                        </select>
+                        } @else {
+                        <input [type]="campo.type || 'text'" [formControlName]="campo.name" [placeholder]="campo.placeholder || campo.label"
+                            class="w-full mt-1 input input-bordered" />
+                        }
+                          
+                    } @else {
+                    <div class="w-full mt-1 px-3 py-2 bg-gray-100 rounded text-gray-800 text-sm">
+                        {{ getValorMostrado(campo.name) }}
+                    </div>
+                    }
+                      
             
                     <!-- Validaciones dinámicas -->
                     @if (form.get(campo.name)?.touched && form.get(campo.name)?.invalid) {

@@ -9,7 +9,7 @@
     (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)" />
 
 <!-- Detalle -->
-<app-table-detail *ngIf="polizaSeleccionada" [item]="polizaSeleccionada" title="Detalle de la póliza"
+<app-table-detail *ngIf="polizaSeleccionada" [item]="polizaSeleccionada" entity="poliza" title="Detalle de la póliza"
     (cerrar)="cerrarDetalle()" />
 
 <!-- Formulario -->

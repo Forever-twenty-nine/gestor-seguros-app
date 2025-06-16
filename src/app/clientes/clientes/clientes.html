@@ -9,8 +9,34 @@
 
 
 <!-- Modal de detalle -->
-<app-table-detail *ngIf="clienteSeleccionado" [item]="clienteSeleccionado" title="Detalle del Cliente"
-    (cerrar)="cerrarDetalle()" />
+@if (clienteSeleccionado) {
+<app-table-detail [item]="clienteSeleccionado" title="Detalle del Cliente" entity="cliente" (cerrar)="cerrarDetalle()">
+
+    <!-- 🔗 Sección adicional: pólizas asociadas -->
+    @if (polizasDelCliente().length > 0) {
+    <div detalle-extra class="mt-4">
+        <h2 class="mb-2 text-sm text-gray-500 font-medium uppercase">Pólizas asociadas</h2>
+
+        <div class="space-y-2">
+            @for (poliza of polizasDelCliente(); track poliza.id) {
+            <div class="p-3 bg-gray-50 rounded-md border text-sm text-gray-800">
+                <div class="font-semibold text-gray-600">{{ poliza.tipoSeguro }}</div>
+                <div>Inicio: {{ poliza.fechaInicio }}</div>
+                <div>Vencimiento: {{ poliza.fechaVencimiento }}</div>
+                <div>Estado: {{ poliza.estado }}</div>
+            </div>
+            }
+        </div>
+    </div>
+    } @else {
+    <div detalle-extra class="mt-4 text-sm text-gray-400 italic">
+        Este cliente no tiene pólizas asociadas.
+    </div>
+    }
+
+</app-table-detail>
+}
+
 
 <!-- Modal de formulario -->
 @if (formularioVisible) {

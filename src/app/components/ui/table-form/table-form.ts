@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output,inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FieldMeta } from '../../../utils/form-utils'; // ajustá el path según tu estructura
+import { ClientesService } from '../../../services/clientes.service';
+import { AseguradorasService } from '../../../services/aseguradoras.service';
+import { FieldMeta } from '../../../utils/form-utils'; 
 
 @Component({
   selector: 'app-table-form',
@@ -9,6 +11,11 @@ import { FieldMeta } from '../../../utils/form-utils'; // ajustá el path según
   templateUrl: './table-form.html'
 })
 export class TableForm {
+
+  private clientesService = inject(ClientesService);
+  private aseguradorasService = inject(AseguradorasService);
+
+
   @Input() title: string = 'Formulario';
   @Input() showGuardar = true;
   @Input() showCancelar = true;
@@ -21,4 +28,17 @@ export class TableForm {
 
   @Output() guardar = new EventEmitter<void>();
   @Output() cerrar = new EventEmitter<void>();
+
+  aseguradoras = this.aseguradorasService.aseguradoras;
+
+
+  getValorMostrado(nombreCampo: string): string {
+    const valor = this.form.get(nombreCampo)?.value;
+
+    if (nombreCampo === 'clienteId') {
+      return this.clientesService.getClienteNombrePorId(valor);
+    }
+
+    return valor ?? '';
+  }
 }
