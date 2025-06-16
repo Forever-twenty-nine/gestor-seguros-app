@@ -1,1 +1,33 @@
-<p>siniestros works!</p>
+<!-- Encabezado -->
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-xl font-bold">Siniestros</h1>
+</div>
+
+<!-- Tabla -->
+<app-table [headers]="columnas" [displayedColumns]="campos" [rows]="siniestros()" [actions]="acciones"
+    [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nuevo siniestro'" [pageSize]="10"
+    (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)" [fieldTypes]="fieldTypes">
+</app-table>
+
+<!-- Detalle -->
+@if (siniestroSeleccionado) {
+<app-table-detail [item]="siniestroSeleccionado" title="Detalle del Siniestro" entity="siniestro"
+    (cerrar)="cerrarDetalle()" />
+}
+
+<!-- Formulario -->
+@if (formularioVisible) {
+<app-table-form [title]="modoEdicion ? 'Editar Siniestro' : 'Nuevo Siniestro'"
+    [textGuardar]="modoEdicion ? 'Guardar cambios' : 'Crear siniestro'" [textCancelar]="'Cancelar'" [showGuardar]="true"
+    [disableGuardar]="siniestroForm.invalid" [form]="siniestroForm" [fields]="formFields" (cerrar)="cerrarFormulario()"
+    (guardar)="guardarFormulario()" />
+}
+
+<!-- Confirmación de eliminación -->
+@if (siniestroParaEliminar) {
+<app-table-confirm title="¿Eliminar siniestro?"
+    [message]="'¿Estás seguro de eliminar el siniestro de ' + siniestroParaEliminar.tipoSiniestro + '?'"
+    textCancelar="Cancelar" textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()"
+    (confirmar)="confirmarEliminacion()" />
+}
+  

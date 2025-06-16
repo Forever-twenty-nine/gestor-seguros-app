@@ -1,5 +1,5 @@
 export interface Siniestro {
-    id?: string;
+    id: string;
     clienteId: string;
     polizaId: string;
     fecha: Date;

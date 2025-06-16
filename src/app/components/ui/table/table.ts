@@ -1,16 +1,14 @@
 import { Component, Input, Output, EventEmitter, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { formatearFechaHoraLocal } from '../../../utils/form-utils';
 
 @Component({
   selector: 'app-table',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './table.html',
 })
+
 export class Table {
-  // ----------------------------------------
-  // 📥 Inputs configurables desde el padre
-  // ----------------------------------------
 
   /** Encabezados visibles en la tabla */
   @Input() headers: string[] = [];
@@ -30,6 +28,18 @@ export class Table {
     return this._rows();
   }
 
+  @Input() fieldTypes: Record<string, string> = {}; // 👈 nuevo input
+
+  formatValue(value: any, field: string): string {
+    const tipo = this.fieldTypes[field];
+
+    if (tipo === 'datetime') {
+      return formatearFechaHoraLocal(value);
+    }
+
+    return value ?? '—';
+  }
+
   /** Acciones habilitadas por fila: ['ver', 'editar', 'eliminar'] */
   @Input() actions: string[] = [];
 
@@ -45,19 +55,11 @@ export class Table {
   /** Texto del botón “Nuevo” */
   @Input() nuevoLabel = 'Nuevo registro';
 
-  // ----------------------------------------
-  // 📤 Eventos hacia el componente padre
-  // ----------------------------------------
-
   /** Al hacer click en el botón "Nuevo" */
   @Output() nuevoClick = new EventEmitter<void>();
 
   /** Cuando se ejecuta una acción sobre una fila */
   @Output() actionClick = new EventEmitter<{ action: string; row: any }>();
-
-  // ----------------------------------------
-  // 🧠 Signals reactivos para estado interno
-  // ----------------------------------------
 
   /** Página actual */
   currentPage = signal(1);
@@ -83,10 +85,7 @@ export class Table {
       )
     );
   });
-
-  // ----------------------------------------
-  // 📐 Clases CSS para el grid según columna
-  // ----------------------------------------
+  //** Clase CSS para el grid según columnas visibles */
   gridClass = computed(() => {
     const cols = this.displayedColumns.length + (this.actions.length > 0 ? 1 : 0);
     return {
@@ -107,10 +106,6 @@ export class Table {
     const start = (this.currentPage() - 1) * this.pageSize;
     return this.filteredRows().slice(start, start + this.pageSize);
   });
-
-  // ----------------------------------------
-  // 🧩 Métodos de interacción
-  // ----------------------------------------
 
   /** Cambiar página hacia adelante o atrás */
   changePage(delta: number) {

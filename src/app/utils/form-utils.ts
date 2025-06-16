@@ -3,11 +3,13 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 export interface FieldMeta {
     name: string;
     label: string;
-    type?: 'text' | 'email' | 'number' | 'date' | 'select' | 'textarea';
+    type?: 'text' | 'email' | 'number' | 'date' | 'select' | 'textarea' | 'file' | 'checkbox' | 'radio' | 'password' | 'datetime' | 'time' | 'hidden';
     validators?: any[];
+    options?: string[] | { label: string; value: string }[];
     placeholder?: string;
-    readonly?: boolean; 
-    
+    readonly?: boolean;
+
+
 }
 
 // Podés usar esto directamente o copiar en el componente específico
@@ -19,6 +21,7 @@ export const camposCliente: FieldMeta[] = [
     { name: 'direccion', label: 'Dirección', type: 'text', validators: [Validators.required] },
 ];
 
+// Campos para el formulario de póliza
 export const camposPoliza: FieldMeta[] = [
     { name: 'clienteId', label: 'Cliente', type: 'select', validators: [Validators.required], readonly: true },
     { name: 'numero', label: 'Número de póliza', type: 'text', validators: [Validators.required] },
@@ -32,6 +35,17 @@ export const camposPoliza: FieldMeta[] = [
     { name: 'estado', label: 'Estado', type: 'text', validators: [Validators.required] }
 ];
 
+// Campos para el formulario de siniestro
+export const camposSiniestro: FieldMeta[] = [
+    { name: 'clienteId', label: 'Cliente', type: 'select', validators: [Validators.required] },
+    { name: 'polizaId', label: 'Póliza asociada', type: 'select', validators: [Validators.required] },
+    { name: 'fecha', label: 'Fecha del siniestro', type: 'datetime', validators: [Validators.required] },
+    { name: 'tipoSiniestro', label: 'Tipo de siniestro', type: 'text', validators: [Validators.required] },
+    { name: 'descripcion', label: 'Descripción', type: 'textarea', validators: [Validators.required] },
+    { name: 'estado', label: 'Estado', type: 'select', options: ['reportado', 'en proceso', 'resuelto'], validators: [Validators.required] },
+    { name: 'adjuntos', label: 'Adjuntos', type: 'file' },
+    { name: 'empresaId', label: 'Empresa', type: 'hidden' }
+];
 
 // Función para generar FormGroup desde los metadatos
 export function generateFormGroup(fb: FormBuilder, fields: FieldMeta[]): FormGroup {
@@ -42,6 +56,7 @@ export function generateFormGroup(fb: FormBuilder, fields: FieldMeta[]): FormGro
     return fb.group(group);
 }
 
+// Función para generar FormGroup desde los metadatos con valores iniciales
 export function getLabelFromFields(fields: FieldMeta[], key: string): string {
     const found = fields.find(f => f.name === key);
     return found?.label ?? key;
@@ -54,9 +69,8 @@ export function mapRowToForm<T = any>(row: Record<string, any>, form: FormGroup)
     for (const key of Object.keys(form.controls)) {
         const value = row[key];
 
-        // Si es fecha, convertimos a string ISO corto
         if (value instanceof Date) {
-            result[key] = value.toISOString().split('T')[0];
+            result[key] = value.toISOString().slice(0, 16); // formato: 2025-06-17T14:30
         } else {
             result[key] = value ?? null;
         }
@@ -64,7 +78,6 @@ export function mapRowToForm<T = any>(row: Record<string, any>, form: FormGroup)
 
     return result;
 }
-
   
 
 // 🔁 De form → modelo con fechas parseadas
@@ -73,14 +86,32 @@ export function mapFormToModel(form: FormGroup): Record<string, any> {
     const result: Record<string, any> = {};
 
     for (const [key, value] of Object.entries(raw)) {
-        if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
-            result[key] = new Date(value); // parse ISO string como Date
+        if (
+            typeof value === 'string' &&
+            /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/.test(value)
+        ) {
+            result[key] = new Date(value);
         } else {
             result[key] = value;
         }
     }
 
     return result;
-  }
+}
   
-  
+
+
+// Función para formatear fecha a string local
+export function formatearFechaHoraLocal(fecha: Date | string): string {
+    const d = new Date(fecha);
+    return d.toLocaleString('es-AR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+}
+
+
+

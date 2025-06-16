@@ -13,29 +13,58 @@
         <div class="space-y-4">
             <form [formGroup]="form" class="space-y-4">
                 @for (campo of fields; track campo.name) {
+        
+                @if (campo.type === 'hidden') {
+                <input type="hidden" [formControlName]="campo.name" />
+                } @else {
                 <div>
                     <label class="block text-sm font-medium text-gray-700">{{ campo.label }}</label>
+        
                     @if (!campo.readonly) {
-                        @if (campo.name === 'empresaAseguradoraId') {
-                        <select [formControlName]="campo.name" class="w-full mt-1 input input-bordered">
-                            <option disabled value="">Seleccionar aseguradora</option>
-                            @for (a of aseguradoras(); track a.id) {
-                            <option [value]="a.id">{{ a.nombre }}</option>
-                            }
-                        </select>
-                        } @else {
-                        <input [type]="campo.type || 'text'" [formControlName]="campo.name" [placeholder]="campo.placeholder || campo.label"
-                            class="w-full mt-1 input input-bordered" />
+                    @switch (campo.type) {
+                    @case ('select') {
+                    <select [formControlName]="campo.name" class="w-full mt-1 input input-bordered">
+                        <option disabled value="">Seleccione...</option>
+                        @if (campo.name === 'clienteId') {
+                        @for (c of clientes(); track c.id) {
+                        <option [value]="c.id">{{ c.nombre }}</option>
                         }
-                          
+                        } @else if (campo.name === 'polizaId') {
+                        @for (p of polizasFiltradas(); track p.id) {
+                        <option [value]="p.id">{{ p.label }}</option>
+                        }
+                        } @else if (campo.name === 'empresaAseguradoraId') {
+                        @for (a of aseguradoras(); track a.id) {
+                        <option [value]="a.id">{{ a.nombre }}</option>
+                        }
+                        } @else {
+                        @for (opt of campo.options; track opt) {
+                        <option [value]="opt">{{ opt }}</option>
+                        }
+                        }
+                    </select>
+                    }
+                    @case ('textarea') {
+                    <textarea [formControlName]="campo.name" rows="4"
+                        class="w-full mt-1 input input-bordered resize-none"></textarea>
+                    }
+                    @case ('file') {
+                    <input type="file" [formControlName]="campo.name" class="w-full mt-1 input input-bordered" />
+                    }
+                    @case ('datetime') {
+                    <input type="datetime-local" [formControlName]="campo.name" class="w-full mt-1 input input-bordered" />
+                    }
+                    @default {
+                    <input [type]="campo.type || 'text'" [formControlName]="campo.name"
+                        [placeholder]="campo.placeholder || campo.label" class="w-full mt-1 input input-bordered" />
+                    }
+                    }
                     } @else {
                     <div class="w-full mt-1 px-3 py-2 bg-gray-100 rounded text-gray-800 text-sm">
                         {{ getValorMostrado(campo.name) }}
                     </div>
                     }
-                      
-            
-                    <!-- Validaciones dinámicas -->
+        
                     @if (form.get(campo.name)?.touched && form.get(campo.name)?.invalid) {
                     @if (form.get(campo.name)?.errors?.['required']) {
                     <p class="text-xs text-red-500 mt-1">Este campo es obligatorio</p>
@@ -50,9 +79,10 @@
                     }
                 </div>
                 }
+                }
             </form>
-              
         </div>
+          
 
         <!-- Footer -->
         <div class="mt-6 flex justify-end gap-2">
@@ -71,4 +101,3 @@
         </div>
     </div>
 </div>
-  

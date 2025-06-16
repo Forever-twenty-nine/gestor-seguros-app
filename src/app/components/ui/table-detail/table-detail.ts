@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter,inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClientesService } from '../../../services/clientes.service';
-import { getLabelFromFields, camposCliente, camposPoliza } from '../../../utils/form-utils';
+import { getLabelFromFields, camposCliente, camposPoliza,camposSiniestro } from '../../../utils/form-utils';
 
 
 @Component({
@@ -41,10 +41,10 @@ export class TableDetail {
       return getLabelFromFields(camposCliente, key);
     } else if (this.entity === 'poliza') {
       return getLabelFromFields(camposPoliza, key);
+    } else if (this.entity === 'siniestro') {
+      return getLabelFromFields(camposSiniestro, key);
     }
     return key;
   }
-  
-  
-  
+   
 }
