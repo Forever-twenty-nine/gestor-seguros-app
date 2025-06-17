@@ -1,0 +1,62 @@
+<!-- Encabezado y botón agregar -->
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-xl font-bold">Aseguradoras</h1>
+</div>
+
+<!-- Tabla -->
+<app-table
+  [headers]="columnas"
+  [displayedColumns]="campos"
+  [rows]="aseguradoras()"
+  [actions]="acciones"
+  [enableSearch]="true"
+  [showNuevo]="true"
+  [nuevoLabel]="'Nueva aseguradora'"
+  [pageSize]="10"
+  (nuevoClick)="abrirFormulario()"
+  (actionClick)="manejarAccion($event)">
+</app-table>
+
+<!-- Modal de detalle -->
+@if (aseguradoraSeleccionada) {
+  <app-table-detail
+    [item]="aseguradoraSeleccionada"
+    title="Detalle de Aseguradora"
+    entity="aseguradora"
+    (cerrar)="cerrarDetalle()">
+
+    <!-- Detalle extra: Logo -->
+    @if (aseguradoraSeleccionada.logoUrl) {
+      <div detalle-extra class="mt-4 text-center">
+        <img [src]="aseguradoraSeleccionada.logoUrl" alt="Logo"
+             class="mx-auto w-32 h-20 object-contain border bg-white rounded shadow" />
+      </div>
+    }
+
+  </app-table-detail>
+}
+
+<!-- Modal de formulario -->
+@if (formularioVisible) {
+  <app-table-form
+    [title]="modoEdicion ? 'Editar Aseguradora' : 'Nueva Aseguradora'"
+    [textGuardar]="modoEdicion ? 'Guardar cambios' : 'Crear aseguradora'"
+    [textCancelar]="'Cancelar'"
+    [showGuardar]="true"
+    [disableGuardar]="aseguradoraForm.invalid"
+    [form]="aseguradoraForm"
+    [fields]="formFields"
+    (cerrar)="cerrarFormulario()"
+    (guardar)="guardarFormulario()" />
+}
+
+<!-- Confirmación de eliminación -->
+@if (aseguradoraParaEliminar) {
+  <app-table-confirm
+    title="¿Eliminar aseguradora?"
+    [message]="'¿Estás seguro de eliminar a ' + aseguradoraParaEliminar.nombre + '?'"
+    textCancelar="Cancelar"
+    textConfirmar="Eliminar"
+    (cancelar)="cancelarEliminacion()"
+    (confirmar)="confirmarEliminacion()" />
+}

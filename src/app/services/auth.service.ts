@@ -7,9 +7,10 @@ import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+    // Inyectamos los servicios necesarios
     private auth = inject(Auth);
-    private firestore = inject(Firestore); // 👈 esta faltaba
-    private userService = inject(UserService); // 👈 esta también
+    private firestore = inject(Firestore);
+    private userService = inject(UserService);
     private router = inject(Router);
 
     login(email: string, password: string) {
@@ -26,6 +27,7 @@ export class AuthService {
 
     logout() {
         return signOut(this.auth).then(() => {
+            this.userService.logout(); 
             this.router.navigateByUrl('/auth/login');
         });
     }
@@ -58,12 +60,11 @@ export class AuthService {
             const perfil = (await getDoc(userRef)).data() as User;
             this.userService.setUsuario(perfil);
 
-            return perfil; // ✅ importante para el componente
+            return perfil; // 
         } catch (error) {
             console.error('❌ loginWithGoogle error:', error);
-            throw error; // ✅ se propaga al .catch del componente
+            throw error; // 
         }
     }
-      
 
 }

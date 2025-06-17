@@ -36,6 +36,11 @@ const routes: Routes = [
           import('../../alertas/alertas-module').then(m => m.AlertasModule)
       },
       {
+        path: 'aseguradoras',
+        loadChildren: () =>
+          import('../../aseguradoras/aseguradoras-module').then(m => m.AseguradorasModule)
+      },
+      {
         path: 'perfil',
         loadChildren: () =>
           import('../../perfil/perfil-module').then(m => m.PerfilModule)

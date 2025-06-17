@@ -63,7 +63,7 @@ export class Polizas {
 
   constructor() {
     this.service.cargarMockData();
-    this.aseguradorasService.cargarMockData();
+
   }
 
   manejarAccion(event: { action: string; row: Poliza }) {

@@ -3,9 +3,8 @@
   <aside class="w-64 hidden md:flex flex-col bg-gray-800 text-white shadow-lg border-r border-gray-700 px-6 py-8"
     @fadeIn>
     <!-- Logo -->
-    <a routerLink="/" class="mb-12 block">
-      <img ngSrc="assets/logo-gestor-seguros-app.webp" width="200" height="60" alt="Logo Gestor Seguros App" priority
-        class="mx-auto object-contain" />
+    <a routerLink="/" class="mb-12 block text-center">
+      <span class="text-3xl font-bold tracking-wide text-white select-none">Gestor Seguros</span>
     </a>
 
     <!-- Navegación -->
@@ -36,33 +35,39 @@
           </a>
         </li>
         <li>
+          <a routerLink="/aseguradoras" routerLinkActive="bg-gray-700"
+            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
+            Aseguradoras
+          </a>
+        </li>
+        <li>
           <a routerLink="/perfil" routerLinkActive="bg-gray-700"
             class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
             Perfil
           </a>
+
         </li>
       </ul>
-      <button (click)="logout()" class="text-sm text-red-600 hover:underline">Cerrar sesión</button>
 
-
+      <!-- Información del usuario -->
       <div class="mt-12 pt-4 border-t border-gray-700 text-center">
         @if (user !== null) {
         <p class="text-sm font-semibold">{{ user.nombre }}</p>
         <p class="text-xs text-gray-400">
           {{ user.rol === 'admin' ? 'Administrador' : 'Empleado' }}
         </p>
+        <!-- Botón de cerrar sesión -->
+        <button (click)="logout()" class="text-sm text-red-600 hover:underline">Cerrar sesión</button>
+
         } @else {
         <p class="text-sm italic text-gray-400">Cargando usuario...</p>
         }
       </div>
-      
-
-
     </nav>
   </aside>
 
   <!-- Contenido principal -->
-  <main class="flex-1 p-6 md:p-10 overflow-y-auto" >
+  <main class="flex-1 p-6 md:p-10 overflow-y-auto">
     <div class="max-w-7xl mx-auto">
       <router-outlet></router-outlet>
     </div>

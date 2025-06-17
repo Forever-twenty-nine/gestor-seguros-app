@@ -44,8 +44,8 @@ export class Alertas {
     ...generateFormGroup(this.fb, this.formFields).controls,
     id: this.fb.control(''),
     empresaId: this.fb.control('empresa1'),
-    estado: this.fb.control('pendiente'),   // ✅ valor por defecto
-    origen: this.fb.control('manual'),      // ✅ valor por defecto
+    estado: this.fb.control('pendiente'),   
+    origen: this.fb.control('manual'),      
   });
 
   manejarAccion(event: { action: string; row: Alerta }) {

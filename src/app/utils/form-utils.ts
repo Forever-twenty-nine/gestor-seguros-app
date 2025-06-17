@@ -51,6 +51,18 @@ export const camposAlerta: FieldMeta[] = [
     { name: 'origen', label: 'Origen', type: 'select', options: ['auto', 'manual'], validators: [Validators.required] },
     { name: 'empresaId', label: 'Empresa', type: 'hidden' }
 ];
+// Campos para el formulario de Aseguradora
+
+export const camposAseguradora: FieldMeta[] = [
+  { name: 'nombre', label: 'Nombre', type: 'text', validators: [Validators.required] },
+  { name: 'emailContacto', label: 'Email de contacto', type: 'email', validators: [Validators.required, Validators.email] },
+  { name: 'telefono', label: 'Teléfono', type: 'text' },
+  { name: 'direccion', label: 'Dirección', type: 'text' },
+  { name: 'logoUrl', label: 'Logo URL', type: 'hidden' },
+  { name: 'empresaId', label: 'Empresa', type: 'hidden' } 
+];
+
+
 // Función para generar FormGroup desde los metadatos
 export function generateFormGroup(fb: FormBuilder, fields: FieldMeta[]): FormGroup {
     const group: any = {};

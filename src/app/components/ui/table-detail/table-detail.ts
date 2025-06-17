@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter,inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClientesService } from '../../../services/clientes.service';
 import { PolizasService } from '../../../services/polizas.service';
-import { getLabelFromFields, camposCliente, camposPoliza,camposSiniestro,camposAlerta } from '../../../utils/form-utils';
+import { getLabelFromFields, camposCliente, camposPoliza,camposSiniestro,camposAlerta, camposAseguradora } from '../../../utils/form-utils';
 
 
 @Component({
@@ -15,7 +15,7 @@ export class TableDetail {
   @Input() title: string = 'Detalle';
   @Output() cerrar = new EventEmitter<void>();
 
-  @Input() entity: 'cliente' | 'poliza' | 'siniestro' | 'alerta' = 'cliente';
+  @Input() entity: 'cliente' | 'poliza' | 'siniestro' | 'alerta' | 'aseguradora' = 'cliente';
 
 
   private clientesService = inject(ClientesService);
@@ -23,8 +23,23 @@ export class TableDetail {
 
 
   get itemKeys(): string[] {
-    return this.item ? Object.keys(this.item).filter(k => k !== 'id') : [];
-  }
+  if (!this.item) return [];
+
+  const campos = {
+    cliente: camposCliente,
+    poliza: camposPoliza,
+    siniestro: camposSiniestro,
+    alerta: camposAlerta,
+    aseguradora: camposAseguradora
+  }[this.entity];
+
+  return Object.keys(this.item).filter(k => {
+    if (k === 'id') return false;
+    const meta = campos?.find(f => f.name === k);
+    return meta?.type !== 'hidden';
+  });
+}
+
 
   getValorFormateado(key: string, value: any): string {
     if (key === 'clienteId') {
@@ -33,7 +48,7 @@ export class TableDetail {
     }
 
     if (key === 'polizaId') {
-      const poliza = this.polizasService.getPolizaById?.(value); // 👈 agregalo al servicio si no está
+      const poliza = this.polizasService.getPolizaById?.(value); 
       return poliza ? (poliza.numero ?? poliza.tipoSeguro ?? poliza.id ?? 'Sin póliza') : 'Sin póliza';
 
     }
@@ -54,7 +69,8 @@ export class TableDetail {
       case 'cliente': return getLabelFromFields(camposCliente, key);
       case 'poliza': return getLabelFromFields(camposPoliza, key);
       case 'siniestro': return getLabelFromFields(camposSiniestro, key);
-      case 'alerta': return getLabelFromFields(camposAlerta, key); // 
+      case 'alerta': return getLabelFromFields(camposAlerta, key); 
+      case 'aseguradora': return getLabelFromFields(camposAlerta, key); 
       default: return key;
     }
   }

@@ -1,46 +1,32 @@
 import { Injectable, signal } from '@angular/core';
 import { Aseguradora } from '../models/aseguradora.model';
+import { ASEGURADORAS_MOCK } from '../mocks/aseguradoras.mock';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class AseguradorasService {
-    private _aseguradoras = signal<Aseguradora[]>([]);
+  private _aseguradoras = signal<Aseguradora[]>([]);
 
-    get aseguradoras() {
-        return this._aseguradoras.asReadonly();
-    }
+  get aseguradoras() {
+    return this._aseguradoras.asReadonly();
+  }
 
-    // Mock de aseguradoras
-    cargarMockData() {
-        const data: Aseguradora[] = [
-            {
-                id: 'aseg1',
-                nombre: 'La Nueva Seguros',
-                logoUrl: 'https://via.placeholder.com/100x50',
-                emailContacto: 'contacto@lanueva.com',
-            },
-            {
-                id: 'aseg2',
-                nombre: 'Mapfre',
-                logoUrl: 'https://via.placeholder.com/100x50',
-                emailContacto: 'info@mapfre.com',
-            }
-        ];
-        this._aseguradoras.set(data);
-    }
+  constructor() {
+    this._aseguradoras.set(ASEGURADORAS_MOCK);
+  }
 
-    agregarAseguradora(aseguradora: Aseguradora) {
-        this._aseguradoras.update(prev => [...prev, aseguradora]);
-    }
+  agregarAseguradora(aseguradora: Aseguradora) {
+    this._aseguradoras.update(prev => [...prev, aseguradora]);
+  }
 
-    eliminarAseguradora(id: string) {
-        this._aseguradoras.update(prev => prev.filter(a => a.id !== id));
-    }
+  eliminarAseguradora(id: string) {
+    this._aseguradoras.update(prev => prev.filter(a => a.id !== id));
+  }
 
-    actualizarAseguradora(aseguradora: Aseguradora) {
-        this._aseguradoras.update(prev =>
-            prev.map(a => a.id === aseguradora.id ? aseguradora : a)
-        );
-    }
+  actualizarAseguradora(aseguradora: Aseguradora) {
+    this._aseguradoras.update(prev =>
+      prev.map(a => a.id === aseguradora.id ? { ...aseguradora } : a)
+    );
+  }
 }
