@@ -5,8 +5,7 @@ import { Toast } from "./components/ui/toast/toast";
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, Toast],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  templateUrl: './app.html'
 })
 export class App {
   protected title = 'gestor-seguros-app';

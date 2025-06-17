@@ -11,24 +11,10 @@ export class UserService {
         return this._usuario.asReadonly();
     }
 
-    // Simula login y carga del usuario
-    loginMock() {
-        const userMock: User = {
-            id: 'u123',
-            email: 'admin@empresa.com',
-            nombre: 'Admin Principal',
-            rol: 'admin',
-            empresaId: 'empresa1',
-            plan: 'basic',
-            activo: true
-        };
-        this._usuario.set(userMock);
+    setUsuario(user: User) {
+        this._usuario.set(user);
     }
-
-    logoutMock() {
-        this._usuario.set(null);
-    }
-
+      
     cambiarNombre(nombre: string) {
         const actual = this._usuario();
         if (actual) {

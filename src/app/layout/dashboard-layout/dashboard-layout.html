@@ -42,17 +42,27 @@
           </a>
         </li>
       </ul>
+      <button (click)="logout()" class="text-sm text-red-600 hover:underline">Cerrar sesión</button>
 
-      <!-- Perfil usuario (parte inferior) -->
+
       <div class="mt-12 pt-4 border-t border-gray-700 text-center">
-        <p class="text-sm font-semibold">Juan Díaz</p>
-        <p class="text-xs text-gray-400">Agente de Seguros</p>
+        @if (user !== null) {
+        <p class="text-sm font-semibold">{{ user.nombre }}</p>
+        <p class="text-xs text-gray-400">
+          {{ user.rol === 'admin' ? 'Administrador' : 'Empleado' }}
+        </p>
+        } @else {
+        <p class="text-sm italic text-gray-400">Cargando usuario...</p>
+        }
       </div>
+      
+
+
     </nav>
   </aside>
 
   <!-- Contenido principal -->
-  <main class="flex-1 p-6 md:p-10 overflow-y-auto" @fadeIn>
+  <main class="flex-1 p-6 md:p-10 overflow-y-auto" >
     <div class="max-w-7xl mx-auto">
       <router-outlet></router-outlet>
     </div>

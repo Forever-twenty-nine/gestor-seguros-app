@@ -1,0 +1,51 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-500 to-blue-100 flex items-center justify-center px-4">
+    <form [formGroup]="form" (ngSubmit)="submit()"
+        class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md space-y-6 border border-gray-200">
+        <div class="text-center">
+            <h1 class="text-2xl font-bold text-gray-800 mb-1">Bienvenido</h1>
+            <p class="text-sm text-gray-500">Ingresá tus credenciales para continuar</p>
+        </div>
+
+        <div class="space-y-4">
+            <input type="email" formControlName="email" placeholder="Correo electrónico"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+            <input type="password" formControlName="password" placeholder="Contraseña"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <button type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg w-full transition"
+            [disabled]="form.invalid || loading()">
+            {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
+        </button>
+
+        <div class="relative mt-4">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+                <span class="bg-white px-2 text-gray-500">o continuá con</span>
+            </div>
+        </div>
+        
+        <button type="button" (click)="loginConGoogle()"
+            class="w-full mt-4 border border-gray-300 rounded-lg py-2 px-4 flex items-center justify-center gap-2 hover:bg-gray-100 transition">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google" />
+            <span class="text-gray-700 font-medium">Google</span>
+        </button>
+          
+
+        <div class="text-sm text-center space-y-2 mt-4">
+            <button type="button" class="text-blue-600 hover:underline" (click)="goTo('forgot-password')">
+                ¿Olvidaste tu contraseña?
+            </button>
+            <br />
+            <button type="button" class="text-gray-600 hover:underline" (click)="goTo('register')">
+                Registrarse
+            </button>
+        </div>
+          
+    </form>
+</div>
+  
