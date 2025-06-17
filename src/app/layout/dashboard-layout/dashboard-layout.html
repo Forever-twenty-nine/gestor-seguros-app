@@ -1,3 +1,11 @@
+@if (empresaIncompleta()) {
+<div class="bg-yellow-100 text-yellow-900 px-4 py-3 text-sm border-b border-yellow-300">
+  ⚠️ Para continuar usando la app, primero completá los datos de tu empresa desde <a routerLink="/perfil"
+    class="underline font-medium text-yellow-800 hover:text-yellow-600">tu perfil</a>.
+</div>
+}
+
+
 <div class="flex min-h-screen bg-gray-50 text-gray-900">
   <!-- Sidebar oscuro -->
   <aside class="w-64 hidden md:flex flex-col bg-gray-800 text-white shadow-lg border-r border-gray-700 px-6 py-8"

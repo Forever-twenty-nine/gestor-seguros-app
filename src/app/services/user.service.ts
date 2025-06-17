@@ -41,11 +41,5 @@ export class UserService {
             this._usuario.set({ ...actual, nombre });
         }
     }
-
-    cambiarPlan(plan: 'free' | 'basic' | 'premium') {
-        const actual = this._usuario();
-        if (actual) {
-            this._usuario.set({ ...actual, plan });
-        }
-    }
+    
 }

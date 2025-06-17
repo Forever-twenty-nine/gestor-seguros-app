@@ -1,0 +1,66 @@
+@if (empresa(); as e) {
+  <div class="max-w-6xl mx-auto px-4 py-8 space-y-8 overflow-y-auto">
+
+    <!-- layout responsive -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <!-- Columna 1: Usuario + Empresa -->
+      <div class="space-y-6" [formGroup]="form">
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-700 mb-2">Mi perfil</h2>
+          <label class="block text-sm mb-1">Nombre</label>
+          <input formControlName="nombreUsuario" type="text"
+            class="w-full border rounded px-3 py-2" />
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-700 mb-2">Empresa</h2>
+          <label class="block text-sm mb-1">Nombre de empresa</label>
+          <input formControlName="nombreEmpresa" type="text"
+            class="w-full border rounded px-3 py-2" />
+
+          <label class="block text-sm mt-4 mb-1">Días de anticipación para alertas</label>
+          <input formControlName="diasAnticipacion" type="number" min="1"
+            class="w-full border rounded px-3 py-2" />
+
+          <label class="block text-sm mt-4 mb-1">Métodos de alerta</label>
+          <div formGroupName="metodos" class="flex flex-col gap-2 mt-2">
+            <label class="inline-flex items-center gap-2">
+              <input type="checkbox" formControlName="email" />
+              Email
+            </label>
+            <label class="inline-flex items-center gap-2">
+              <input type="checkbox" formControlName="visual" />
+              Visual en app
+            </label>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Columna 2: Plan actual -->
+      <div class="space-y-4">
+        <section>
+          <h2 class="text-lg font-bold text-gray-700 mb-2">Plan actual</h2>
+          <p>Tipo: <strong>{{ e.plan }}</strong></p>
+          <p>Pólizas usadas: <strong>{{ e.polizaCount }} / {{ e.limitePolizas }}</strong></p>
+          <p>Usuarios permitidos: <strong>{{ getUsuariosPermitidos() }}</strong></p>
+        </section>
+      </div>
+    </div>
+
+    <!-- Botón único abajo -->
+    <div>
+      <button (click)="guardarTodo()"
+        class="w-full md:w-auto bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+        [disabled]="form.invalid || cargando()">
+        {{ cargando() ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
+    </div>
+  </div>
+} @else {
+  <div class="py-16 text-center text-gray-500">
+    Cargando datos de la empresa...
+  </div>
+}

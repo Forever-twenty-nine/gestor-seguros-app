@@ -19,11 +19,21 @@ export class RegisterPage {
 
   loading = signal(false);
 
-  form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    repeat: ['', Validators.required]
-  });
+  form = this.fb.group(
+    {
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      repeat: ['', Validators.required],
+    },
+    {
+      validators: (group) => {
+        const password = group.get('password')?.value;
+        const repeat = group.get('repeat')?.value;
+        return password === repeat ? null : { passwordMismatch: true };
+      },
+    }
+  );
+
 
   submit() {
     if (this.form.invalid) return;
@@ -43,7 +53,11 @@ export class RegisterPage {
       })
       .catch((err) => {
         console.error(err);
-        this.toast.show('Error al registrar usuario', 'error');
+        if (err.code === 'auth/email-already-in-use') {
+          this.toast.show('Este correo ya está registrado', 'warning');
+        } else {
+          this.toast.show('Error al registrar usuario', 'error');
+        }
       })
       .finally(() => this.loading.set(false));
   }
@@ -51,5 +65,5 @@ export class RegisterPage {
   goTo(path: string) {
     this.router.navigateByUrl(`/auth/${path}`);
   }
-  
+
 }

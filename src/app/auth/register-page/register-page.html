@@ -6,15 +6,73 @@
             <p class="text-sm text-gray-500">Registrate para comenzar a usar la plataforma</p>
         </div>
 
-        <div class="space-y-4">
-            <input type="email" formControlName="email" placeholder="Correo electrónico"
-                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500" />
-            <input type="password" formControlName="password" placeholder="Contraseña"
-                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500" />
-            <input type="password" formControlName="repeat" placeholder="Repetir contraseña"
-                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500" />
-        </div>
+        <div class="space-y-6">
+            <!-- Email -->
+            <div class="relative">
+                <input type="email" formControlName="email" id="email" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border border-gray-300 rounded-lg
+             focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+                <label for="email" class="absolute left-2 -top-2 px-1 text-sm bg-white text-gray-500 transition-all
+             peer-placeholder-shown:top-3 peer-placeholder-shown:text-base
+             peer-placeholder-shown:text-gray-400
+             peer-focus:-top-2 peer-focus:text-sm peer-focus:text-cyan-600">
+                    Correo electrónico
+                </label>
 
+                @if (form.get('email')?.touched && form.get('email')?.invalid) {
+                <div class="text-sm text-red-600 mt-1 ml-1">
+                    @if (form.get('email')?.errors?.['required']) {
+                    El correo es obligatorio.
+                    } @else if (form.get('email')?.errors?.['email']) {
+                    Ingresá un correo válido.
+                    }
+                </div>
+                }
+            </div>
+
+            <!-- Contraseña -->
+            <div class="relative">
+                <input type="password" formControlName="password" id="password" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border border-gray-300 rounded-lg
+             focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+                <label for="password" class="absolute left-2 -top-2 px-1 text-sm bg-white text-gray-500 transition-all
+             peer-placeholder-shown:top-3 peer-placeholder-shown:text-base
+             peer-placeholder-shown:text-gray-400
+             peer-focus:-top-2 peer-focus:text-sm peer-focus:text-cyan-600">
+                    Contraseña
+                </label>
+
+                @if (form.get('password')?.touched && form.get('password')?.invalid) {
+                <div class="text-sm text-red-600 mt-1 ml-1">
+                    @if (form.get('password')?.errors?.['required']) {
+                    La contraseña es obligatoria.
+                    } @else if (form.get('password')?.errors?.['minlength']) {
+                    Mínimo 6 caracteres.
+                    }
+                </div>
+                }
+            </div>
+
+            <!-- Repetir contraseña -->
+            <div class="relative">
+                <input type="password" formControlName="repeat" id="repeat" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border border-gray-300 rounded-lg
+             focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+                <label for="repeat" class="absolute left-2 -top-2 px-1 text-sm bg-white text-gray-500 transition-all
+             peer-placeholder-shown:top-3 peer-placeholder-shown:text-base
+             peer-placeholder-shown:text-gray-400
+             peer-focus:-top-2 peer-focus:text-sm peer-focus:text-cyan-600">
+                    Repetir contraseña
+                </label>
+
+                @if (form.get('repeat')?.touched && form.get('repeat')?.invalid) {
+                <div class="text-sm text-red-600 mt-1 ml-1">
+                    La repetición es obligatoria.
+                </div>
+                } @else if (form.errors?.['passwordMismatch'] && form.get('repeat')?.touched) {
+                <div class="text-sm text-red-600 mt-1 ml-1">
+                    Las contraseñas no coinciden.
+                </div>
+                }
+            </div>
+        </div>
         <button type="submit"
             class="bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 rounded-lg w-full transition"
             [disabled]="form.invalid || loading()">
@@ -28,4 +86,3 @@
         </div>
     </form>
 </div>
-  

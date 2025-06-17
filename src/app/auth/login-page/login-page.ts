@@ -20,13 +20,13 @@ export class LoginPage {
   private router = inject(Router);
   private firestore = inject(Firestore);
   private userService = inject(UserService);
-  
+
 
   loading = signal(false);
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required],
+    password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   submit() {
@@ -54,7 +54,7 @@ export class LoginPage {
       .catch(() => this.toast.show('Credenciales inválidas', 'error'))
       .finally(() => this.loading.set(false));
   }
-  
+
   goTo(path: string) {
     this.router.navigateByUrl(`/auth/${path}`);
   }
@@ -76,6 +76,6 @@ export class LoginPage {
       })
       .finally(() => this.loading.set(false));
   }
-  
-  
+
+
 }

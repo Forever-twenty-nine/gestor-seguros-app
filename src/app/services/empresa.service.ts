@@ -1,50 +1,51 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal,inject } from '@angular/core';
 import { Empresa } from '../models/empresa.model';
+import { Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class EmpresaService {
-    private _empresa = signal<Empresa | null>(null);
+  private _empresa = signal<Empresa | null>(null);
+  private firestore = inject(Firestore);
 
-    get empresa() {
-        return this._empresa.asReadonly();
-    }
+  get empresa() {
+    return this._empresa.asReadonly();
+  }
 
-    // Simula la carga de la empresa asociada al usuario
-    cargarEmpresaMock() {
-        const empresaMock: Empresa = {
-            id: 'empresa1',
-            nombre: 'Seguros S.A.',
-            plan: 'basic',
-            polizaCount: 2,
-            limitePolizas: 100,
-            configAlertas: {
-                diasAnticipacion: 30,
-                metodos: ['email', 'visual'],
-            },
-        };
-        this._empresa.set(empresaMock);
+  async cargarEmpresaDesdeFirestore(empresaId: string) {
+    const ref = doc(this.firestore, 'empresas', empresaId);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      const empresa = snap.data() as Empresa;
+      this._empresa.set({ ...empresa, id: empresaId });
     }
+  }
 
-    actualizarNombre(nombre: string) {
-        const actual = this._empresa();
-        if (actual) {
-            this._empresa.set({ ...actual, nombre });
-        }
-    }
+  async actualizarNombre(nombre: string) {
+    const actual = this._empresa();
+    if (!actual) return;
 
-    aumentarPolizaCount() {
-        const actual = this._empresa();
-        if (actual) {
-            this._empresa.set({ ...actual, polizaCount: actual.polizaCount + 1 });
-        }
-    }
+    const ref = doc(this.firestore, 'empresas', actual.id);
+    await updateDoc(ref, { nombre });
+    this._empresa.set({ ...actual, nombre });
+  }
 
-    cambiarConfiguracionAlertas(config: Empresa['configAlertas']) {
-        const actual = this._empresa();
-        if (actual) {
-            this._empresa.set({ ...actual, configAlertas: config });
-        }
-    }
+  async aumentarPolizaCount() {
+    const actual = this._empresa();
+    if (!actual) return;
+
+    const ref = doc(this.firestore, 'empresas', actual.id);
+    await updateDoc(ref, { polizaCount: actual.polizaCount + 1 });
+    this._empresa.set({ ...actual, polizaCount: actual.polizaCount + 1 });
+  }
+
+  async cambiarConfiguracionAlertas(config: Empresa['configAlertas']) {
+    const actual = this._empresa();
+    if (!actual) return;
+
+    const ref = doc(this.firestore, 'empresas', actual.id);
+    await updateDoc(ref, { configAlertas: config });
+    this._empresa.set({ ...actual, configAlertas: config });
+  }
 }
