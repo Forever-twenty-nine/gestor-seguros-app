@@ -11,12 +11,62 @@ export interface FieldMeta {
 }
 // Podés usar esto directamente o copiar en el componente específico
 export const camposCliente: FieldMeta[] = [
-    { name: 'nombre', label: 'Nombre', type: 'text', validators: [Validators.required] },
-    { name: 'dniCuit', label: 'DNI/CUIT', type: 'number', validators: [Validators.required] },
-    { name: 'telefono', label: 'Teléfono', type: 'text', validators: [Validators.required] },
-    { name: 'email', label: 'Email', type: 'email', validators: [Validators.required, Validators.email] },
-    { name: 'direccion', label: 'Dirección', type: 'text', validators: [Validators.required] },
+  {
+    name: 'nombre',
+    label: 'Nombre',
+    type: 'text',
+    validators: [
+      Validators.required,
+      Validators.maxLength(50),
+      Validators.pattern(/^[a-zA-ZÁÉÍÓÚÑáéíóúñ\s]+$/)
+    ]
+  },
+  {
+    name: 'telefono',
+    label: 'Teléfono',
+    type: 'text',
+    validators: [
+      Validators.required,
+      Validators.pattern(/^\+?\d{7,15}$/)
+    ]
+  },
+  {
+    name: 'email',
+    label: 'Email',
+    type: 'email',
+    validators: [
+      Validators.required,
+      Validators.email,
+      Validators.maxLength(100)
+    ]
+  },
+  {
+    name: 'direccion',
+    label: 'Dirección',
+    type: 'text',
+    validators: [
+      Validators.required,
+      Validators.maxLength(100)
+    ]
+  },
+  {
+    name: 'dniCuit',
+    label: 'DNI/CUIT',
+    type: 'number',
+    validators: [
+      Validators.required,
+      Validators.min(1000000),
+      Validators.max(99999999999)
+    ]
+  },
+  {
+    name: 'empresaId',
+    label: 'Empresa',
+    type: 'hidden'
+  }
 ];
+
+
 // Campos para el formulario de póliza
 export const camposPoliza: FieldMeta[] = [
     { name: 'clienteId', label: 'Cliente', type: 'select', validators: [Validators.required], readonly: true },

@@ -1,103 +1,173 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] p-6 overflow-y-auto relative">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] p-6 overflow-y-auto relative">
 
-        <!-- Cabecera -->
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-bold text-gray-900">{{ title }}</h2>
-            <button (click)="cerrar.emit()" class="text-gray-400 hover:text-gray-700 transition" title="Cerrar">
-                ✕
-            </button>
-        </div>
-
-        <!-- Contenido proyectado -->
-        <div class="space-y-4">
-            <form [formGroup]="form" class="space-y-4">
-                @for (campo of fields; track campo.name) {
-        
-                @if (campo.type === 'hidden') {
-                <input type="hidden" [formControlName]="campo.name" />
-                } @else {
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">{{ campo.label }}</label>
-        
-                    @if (!campo.readonly) {
-                    @switch (campo.type) {
-                    @case ('select') {
-                    <select [formControlName]="campo.name" class="w-full mt-1 input input-bordered">
-                        <option disabled value="">Seleccione...</option>
-                        @if (campo.name === 'clienteId') {
-                        @for (c of clientes(); track c.id) {
-                        <option [value]="c.id">{{ c.nombre }}</option>
-                        }
-                        } @else if (campo.name === 'polizaId') {
-                        @for (p of polizasFiltradas(); track p.id) {
-                        <option [value]="p.id">{{ p.label }}</option>
-                        }
-                        } @else if (campo.name === 'empresaAseguradoraId') {
-                        @for (a of aseguradoras(); track a.id) {
-                        <option [value]="a.id">{{ a.nombre }}</option>
-                        }
-                        } @else {
-                        @for (opt of campo.options; track opt) {
-                        <option [value]="opt">{{ opt }}</option>
-                        }
-                        }
-                    </select>
-                    }
-                    @case ('textarea') {
-                    <textarea [formControlName]="campo.name" rows="4"
-                        class="w-full mt-1 input input-bordered resize-none"></textarea>
-                    }
-                    @case ('file') {
-                    <input type="file" [formControlName]="campo.name" class="w-full mt-1 input input-bordered" />
-                    }
-                    @case ('datetime') {
-                    <input type="datetime-local" [formControlName]="campo.name" class="w-full mt-1 input input-bordered" />
-                    }
-                    @default {
-                    <input [type]="campo.type || 'text'" [formControlName]="campo.name"
-                        [placeholder]="campo.placeholder || campo.label" class="w-full mt-1 input input-bordered" />
-                    }
-                    }
-                    } @else {
-                    <div class="w-full mt-1 px-3 py-2 bg-gray-100 rounded text-gray-800 text-sm">
-                        {{ getValorMostrado(campo.name) }}
-                    </div>
-                    }
-        
-                    @if (form.get(campo.name)?.touched && form.get(campo.name)?.invalid) {
-                    @if (form.get(campo.name)?.errors?.['required']) {
-                    <p class="text-xs text-red-500 mt-1">Este campo es obligatorio</p>
-                    }
-                    @if (form.get(campo.name)?.errors?.['email']) {
-                    <p class="text-xs text-red-500 mt-1">Debe ser un email válido</p>
-                    }
-                    @if (!form.get(campo.name)?.errors?.['required'] &&
-                    !form.get(campo.name)?.errors?.['email']) {
-                    <p class="text-xs text-red-500 mt-1">Formato inválido</p>
-                    }
-                    }
-                </div>
-                }
-                }
-            </form>
-        </div>
-          
-
-        <!-- Footer -->
-        <div class="mt-6 flex justify-end gap-2">
-            @if (showCancelar) {
-            <button (click)="cerrar.emit()" class="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 text-sm">
-                {{ textCancelar }}
-            </button>
-            }
-
-            @if (showGuardar) {
-            <button (click)="guardar.emit()" [disabled]="disableGuardar"
-                class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm disabled:opacity-50">
-                {{ textGuardar }}
-            </button>
-            }
-        </div>
+    <!-- 🧩 Cabecera -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-semibold text-gray-900">{{ title }}</h2>
+      <button (click)="cerrar.emit()" class="text-gray-400 hover:text-gray-700 text-lg font-bold transition" title="Cerrar">
+        ✕
+      </button>
     </div>
+
+    <!-- 📝 Formulario -->
+    <form [formGroup]="form" class="space-y-6">
+      @for (campo of fields; track campo.name) {
+        @if (campo.type === 'hidden') {
+          <input type="hidden" [formControlName]="campo.name" />
+        } @else if (campo.readonly) {
+          <div class="w-full px-3 py-2 bg-gray-100 rounded text-gray-800 text-sm">
+            <label class="block text-sm font-medium text-gray-500 mb-1">{{ campo.label }}</label>
+            {{ getValorMostrado(campo.name) }}
+          </div>
+        } @else {
+          <div class="relative">
+            @switch (campo.type) {
+              @case ('textarea') {
+                <textarea
+                  [formControlName]="campo.name"
+                  placeholder=" "
+                  id="{{ campo.name }}"
+                  rows="4"
+                  class="peer w-full pt-6 pb-2 px-3 border rounded-lg resize-none
+                         focus:outline-none focus:ring-2 focus:ring-blue-500
+                         border-gray-300
+                         [class.border-red-500]='form.get(campo.name)?.touched && form.get(campo.name)?.invalid'"
+                ></textarea>
+              }
+
+              @case ('select') {
+                <select
+                  [formControlName]="campo.name"
+                  placeholder=" "
+                  id="{{ campo.name }}"
+                  class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-white
+                         focus:outline-none focus:ring-2 focus:ring-blue-500
+                         border-gray-300
+                         [class.border-red-500]='form.get(campo.name)?.touched && form.get(campo.name)?.invalid'"
+                >
+                  <option disabled value="">Seleccione...</option>
+
+                  @if (campo.name === 'clienteId') {
+                    @for (c of clientes(); track c.id) {
+                      <option [value]="c.id">{{ c.nombre }}</option>
+                    }
+                  } @else if (campo.name === 'polizaId') {
+                    @for (p of polizasFiltradas(); track p.id) {
+                      <option [value]="p.id">{{ p.label }}</option>
+                    }
+                  } @else if (campo.name === 'empresaAseguradoraId') {
+                    @for (a of aseguradoras(); track a.id) {
+                      <option [value]="a.id">{{ a.nombre }}</option>
+                    }
+                  } @else {
+                    @for (opt of campo.options; track opt) {
+                      <option [value]="opt">{{ opt }}</option>
+                    }
+                  }
+                </select>
+              }
+
+              @case ('datetime') {
+                <input
+                  type="datetime-local"
+                  [formControlName]="campo.name"
+                  id="{{ campo.name }}"
+                  placeholder=" "
+                  class="peer w-full pt-6 pb-2 px-3 border rounded-lg
+                         focus:outline-none focus:ring-2 focus:ring-blue-500
+                         border-gray-300
+                         [class.border-red-500]='form.get(campo.name)?.touched && form.get(campo.name)?.invalid'"
+                />
+              }
+
+              @case ('file') {
+                <input
+                  type="file"
+                  [formControlName]="campo.name"
+                  id="{{ campo.name }}"
+                  class="peer w-full pt-6 pb-2 px-3 border rounded-lg
+                         focus:outline-none focus:ring-2 focus:ring-blue-500
+                         border-gray-300
+                         [class.border-red-500]='form.get(campo.name)?.touched && form.get(campo.name)?.invalid'"
+                />
+              }
+
+              @default {
+                <input
+                  [type]="campo.type || 'text'"
+                  [formControlName]="campo.name"
+                  id="{{ campo.name }}"
+                  placeholder=" "
+                  class="peer w-full pt-6 pb-2 px-3 border rounded-lg
+                         focus:outline-none focus:ring-2 focus:ring-blue-500
+                         border-gray-300
+                         [class.border-red-500]='form.get(campo.name)?.touched && form.get(campo.name)?.invalid'"
+                />
+              }
+            }
+
+            <!-- 🏷 Label flotante -->
+            <label
+              [for]="campo.name"
+              class="absolute left-3 -top-2 px-1 text-sm bg-white text-gray-500 transition-all
+                     peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
+                     peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-600"
+            >
+              {{ campo.label }}
+            </label>
+
+            <!-- 🚫 Validaciones -->
+            @if (form.get(campo.name)?.touched && form.get(campo.name)?.invalid) {
+              
+              <div class="text-sm text-red-600 mt-1 ml-1 space-y-1">
+                @if (form.get(campo.name)?.errors?.['required']) {
+                  <div>🚫 Este campo es obligatorio.</div>
+                }
+                @if (form.get(campo.name)?.errors?.['email']) {
+                  <div>🚫 Debe ingresar un correo electrónico válido.</div>
+                }
+                @if (form.get(campo.name)?.errors?.['maxlength']) {
+                  <div>🚫 Máximo permitido: {{ form.get(campo.name)?.errors?.['maxlength'].requiredLength }} caracteres.</div>
+                }
+                @if (form.get(campo.name)?.errors?.['minlength']) {
+                  <div>🚫 Mínimo requerido: {{ form.get(campo.name)?.errors?.['minlength'].requiredLength }} caracteres.</div>
+                }
+                @if (form.get(campo.name)?.errors?.['min']) {
+                  <div>🚫 Valor mínimo: {{ form.get(campo.name)?.errors?.['min'].min }}.</div>
+                }
+                @if (form.get(campo.name)?.errors?.['max']) {
+                  <div>🚫 Valor máximo: {{ form.get(campo.name)?.errors?.['max'].max }}.</div>
+                }
+                @if (form.get(campo.name)?.errors?.['pattern']) {
+                  <div>🚫 Formato inválido para este campo.</div>
+                }
+              </div>
+            }
+          </div>
+        }
+      }
+    </form>
+
+    <!-- 📎 Botones -->
+    <div class="mt-6 flex justify-end gap-2">
+      @if (showCancelar) {
+        <button
+          (click)="cerrar.emit()"
+          class="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 text-sm"
+        >
+          {{ textCancelar }}
+        </button>
+      }
+
+      @if (showGuardar) {
+        <button
+          (click)="guardar.emit()"
+          [disabled]="disableGuardar"
+          class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm disabled:opacity-50"
+        >
+          {{ textGuardar }}
+        </button>
+      }
+    </div>
+  </div>
 </div>
