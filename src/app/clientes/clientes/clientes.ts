@@ -5,7 +5,7 @@ import { Cliente } from '../../models/cliente.model';
 import { Table } from '../../components/ui/table/table';
 import { TableDetail } from '../../components/ui/table-detail/table-detail';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { FieldMeta, camposCliente, generateFormGroup, mapRowToForm } from '../../utils/form-utils';
+import { FieldMeta, camposCliente, generateFormGroup, mapRowToForm,formatearFechaLocal } from '../../utils/form-utils';
 import { TableForm } from '../../components/ui/table-form/table-form';
 import { CommonModule } from '@angular/common';
 import { TableConfirm } from '../../components/ui/table-confirm/table-confirm';
@@ -24,6 +24,8 @@ export class Clientes {
   private fb = inject(FormBuilder);
   private toast = inject(ToastService);
   private polizasService = inject(PolizasService);
+  formatearFechaLocal = formatearFechaLocal;
+
 
   // 📄 Campos visibles en la tabla
   columnas = ['Nombre', 'Teléfono', 'Email'];

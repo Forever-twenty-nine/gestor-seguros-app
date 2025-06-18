@@ -4,73 +4,63 @@
 </div>
 
 <!-- Tabla -->
-<app-table
-  [headers]="columnas"
-  [displayedColumns]="campos"
-  [rows]="clientes()"
-  [actions]="acciones"
-  [enableSearch]="true"
-  [showNuevo]="true"
-  [nuevoLabel]="'Nuevo cliente'"
-  [pageSize]="10"
-  (nuevoClick)="abrirFormulario()"
-  (actionClick)="manejarAccion($event)"
-></app-table>
+<app-table [headers]="columnas" [displayedColumns]="campos" [rows]="clientes()" [actions]="acciones"
+  [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nuevo cliente'" [pageSize]="10"
+  (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)"></app-table>
 
 <!-- Modal de detalle -->
 @if (clienteSeleccionado(); as cliente) {
-  <app-table-detail
-    [item]="cliente"
-    title="Detalle del Cliente"
-    entity="cliente"
-    (cerrar)="cerrarDetalle()"
-  >
-    <!-- 🔗 Sección adicional: pólizas asociadas -->
-    @if (polizasDelCliente().length > 0) {
-      <div detalle-extra class="mt-4">
-        <h2 class="mb-2 text-sm text-gray-500 font-medium uppercase">Pólizas asociadas</h2>
-        <div class="space-y-2">
-          @for (poliza of polizasDelCliente(); track poliza.id) {
-            <div class="p-3 bg-gray-50 rounded-md border text-sm text-gray-800">
-              <div class="font-semibold text-gray-600">{{ poliza.tipoSeguro }}</div>
-              <div>Inicio: {{ poliza.fechaInicio }}</div>
-              <div>Vencimiento: {{ poliza.fechaVencimiento }}</div>
-              <div>Estado: {{ poliza.estado }}</div>
-            </div>
-          }
+<app-table-detail [item]="cliente" title="Detalle del Cliente" entity="cliente" (cerrar)="cerrarDetalle()">
+  <!-- 🔗 Sección adicional: pólizas asociadas -->
+  @if (polizasDelCliente().length > 0) {
+  <div detalle-extra class="mt-4">
+    <h2 class="mb-2 text-sm text-gray-500 font-medium uppercase">Pólizas asociadas</h2>
+    <div class="space-y-2">
+      @for (poliza of polizasDelCliente(); track poliza.id) {
+      <div class="p-4 rounded-xl border border-gray-200 shadow-sm bg-gradient-to-r from-white to-gray-50">
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="text-base font-bold text-blue-700">{{ poliza.tipoSeguro }}</h3>
+          <span class="text-xs px-2 py-1 rounded-full" [ngClass]="{
+        'bg-green-100 text-green-800': poliza.estado === 'vigente',
+        'bg-yellow-100 text-yellow-800': poliza.estado === 'por vencer',
+        'bg-red-100 text-red-800': poliza.estado === 'vencida'
+      }">
+            {{ poliza.estado | titlecase }}
+          </span>
+        </div>
+
+        <div class="text-sm text-gray-700 space-y-1">
+          <div><span class="font-medium text-gray-500">N°:</span> {{ poliza.numero }}</div>
+          <div><span class="font-medium text-gray-500">Inicio:</span> {{ formatearFechaLocal(poliza.fechaInicio) }}
+          </div>
+          <div><span class="font-medium text-gray-500">Vencimiento:</span> {{
+            formatearFechaLocal(poliza.fechaVencimiento) }}</div>
         </div>
       </div>
-    } @else {
-      <div detalle-extra class="mt-4 text-sm text-gray-400 italic">
-        Este cliente no tiene pólizas asociadas.
-      </div>
-    }
-  </app-table-detail>
+
+
+      }
+    </div>
+  </div>
+  } @else {
+  <div detalle-extra class="mt-4 text-sm text-gray-400 italic">
+    Este cliente no tiene pólizas asociadas.
+  </div>
+  }
+</app-table-detail>
 }
 
 <!-- Modal de formulario -->
 @if (formularioVisible()) {
-  <app-table-form
-    [title]="modoTexto()"
-    [textGuardar]="modoTexto() === 'Editar Cliente' ? 'Guardar cambios' : 'Crear cliente'"
-    [textCancelar]="'Cancelar'"
-    [showGuardar]="true"
-    [disableGuardar]="clienteForm.invalid"
-    [form]="clienteForm"
-    [fields]="formFields"
-    (cerrar)="cerrarFormulario()"
-    (guardar)="guardarFormulario()"
-  />
+<app-table-form [title]="modoTexto()"
+  [textGuardar]="modoTexto() === 'Editar Cliente' ? 'Guardar cambios' : 'Crear cliente'" [textCancelar]="'Cancelar'"
+  [showGuardar]="true" [disableGuardar]="clienteForm.invalid" [form]="clienteForm" [fields]="formFields"
+  (cerrar)="cerrarFormulario()" (guardar)="guardarFormulario()" />
 }
 
 <!-- Confirmación de eliminación -->
 @if (clienteParaEliminar(); as cliente) {
-  <app-table-confirm
-    title="¿Eliminar cliente?"
-    [message]="'¿Estás seguro de eliminar a ' + cliente.nombre + '?'"
-    textCancelar="Cancelar"
-    textConfirmar="Eliminar"
-    (cancelar)="cancelarEliminacion()"
-    (confirmar)="confirmarEliminacion()"
-  />
+<app-table-confirm title="¿Eliminar cliente?" [message]="'¿Estás seguro de eliminar a ' + cliente.nombre + '?'"
+  textCancelar="Cancelar" textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()"
+  (confirmar)="confirmarEliminacion()" />
 }
