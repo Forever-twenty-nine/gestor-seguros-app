@@ -1,13 +1,14 @@
 export interface Poliza {
-    id?: string;
-    clienteId: string;
-    empresaAseguradoraId: string;
-    tipoSeguro: string;
-    fechaInicio: Date;
-    fechaVencimiento: Date;
-    montoAsegurado: number;
-    estado: 'vigente' | 'por vencer' | 'vencida';
-    adjuntos?: string[];
-    empresaId: string;
-    numero:string;
+  id?: string;
+  clienteId: string;
+  numero: string;
+  empresaAseguradoraId: string;
+  tipoSeguro: string;
+  fechaInicio: Date;
+  fechaVencimiento: Date;
+  montoAsegurado: number;
+  estado: string;
+  adjuntos?: string[];
+  
 }
+

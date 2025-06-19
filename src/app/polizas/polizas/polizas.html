@@ -1,29 +1,55 @@
 <!-- Encabezado -->
 <div class="flex justify-between items-center mb-4">
-    <h1 class="text-xl font-bold">Pólizas</h1>
+  <h1 class="text-xl font-bold">Pólizas</h1>
 </div>
 
-<!-- Tabla -->
-<app-table [headers]="columnas" [displayedColumns]="campos" [rows]="polizas()" [actions]="acciones"
-    [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nueva póliza'" [pageSize]="10"
-    (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)" />
+<!-- Tabla de pólizas -->
+<app-table
+  [headers]="columnas"
+  [displayedColumns]="campos"
+  [rows]="polizas()"
+  [actions]="acciones"
+  [enableSearch]="true"
+  [showNuevo]="true"
+  [nuevoLabel]="'Nueva póliza'"
+  [pageSize]="10"
+  (nuevoClick)="abrirFormulario()"
+  (actionClick)="manejarAccion($event)"
+/>
 
-<!-- Detalle -->
-<app-table-detail *ngIf="polizaSeleccionada" [item]="polizaSeleccionada" entity="poliza" title="Detalle de la póliza"
-    (cerrar)="cerrarDetalle()" />
+<!-- Detalle de póliza -->
+@if (polizaSeleccionada; as poliza) {
+  <app-table-detail
+    [item]="poliza"
+    entity="poliza"
+    title="Detalle de la póliza"
+    (cerrar)="cerrarDetalle()"
+  />
+}
 
-<!-- Formulario -->
+<!-- Formulario de póliza -->
 @if (formularioVisible) {
-<app-table-form [title]="modoEdicion ? 'Editar Póliza' : 'Nueva Póliza'"
-    [textGuardar]="modoEdicion ? 'Guardar cambios' : 'Crear póliza'" [textCancelar]="'Cancelar'" [showGuardar]="true"
-    [disableGuardar]="form.invalid" [form]="form" [fields]="formFields" (cerrar)="cerrarFormulario()"
-    (guardar)="guardarFormulario()" />
+  <app-table-form
+    [title]="modoEdicion ? 'Editar Póliza' : 'Nueva Póliza'"
+    [textGuardar]="modoEdicion ? 'Guardar cambios' : 'Crear póliza'"
+    [textCancelar]="'Cancelar'"
+    [showGuardar]="true"
+    [disableGuardar]="form.invalid"
+    [form]="form"
+    [fields]="formFields"
+    (cerrar)="cerrarFormulario()"
+    (guardar)="guardarFormulario()"
+  />
 }
 
-<!-- Confirmar eliminación -->
-@if (polizaParaEliminar) {
-<app-table-confirm title="¿Eliminar póliza?"
-    [message]="'¿Estás seguro de eliminar la póliza ' + polizaParaEliminar.numero" textCancelar="Cancelar"
-    textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()" (confirmar)="confirmarEliminacion()" />
+<!-- Confirmación de eliminación -->
+@if (polizaParaEliminar; as poliza) {
+  <app-table-confirm
+    title="¿Eliminar póliza?"
+    [message]="'¿Estás seguro de eliminar la póliza ' + poliza.numero + '?'"
+    textCancelar="Cancelar"
+    textConfirmar="Eliminar"
+    (cancelar)="cancelarEliminacion()"
+    (confirmar)="confirmarEliminacion()"
+  />
 }
-  

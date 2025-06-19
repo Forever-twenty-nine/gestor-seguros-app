@@ -1,45 +1,87 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import {
+    Firestore,
+    collection,
+    collectionData,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    query,
+    setDoc
+} from '@angular/fire/firestore';
+
 import { Poliza } from '../models/poliza.model';
-import { MOCK_POLIZAS } from '../mocks/polizas.mock';
+import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class PolizasService {
-    // Estado reactivo de pólizas
+    // 🔌 Inyectamos Firestore y el UserService
+    private firestore = inject(Firestore);
+    private userService = inject(UserService);
+
+    // 🏢 Obtenemos empresaId desde el perfil cargado por el usuario
+    private getEmpresaId(): string {
+        return this.userService.usuario()?.empresaId ?? '';
+    }
+
+
+    // 📦 Estado reactivo de pólizas
     private _polizas = signal<Poliza[]>([]);
 
     constructor() {
-        // Inicializar con datos mock si es necesario
-        this.cargarMockData();
+        this.cargarPolizas(); // 🚀 Escuchamos Firebase al iniciar
     }
-    // Getter de solo lectura para suscripción desde componentes
+
+    // 📤 Getter público y reactivo de pólizas
     get polizas() {
         return this._polizas.asReadonly();
     }
-    // Cargar datos mock
-    cargarMockData() {
-        this._polizas.set(MOCK_POLIZAS);
+
+    // 🔄 Escucha en tiempo real desde Firebase (Firestore)
+    cargarPolizas() {
+        const empresaId = this.getEmpresaId();
+        if (!empresaId) return;
+
+        const ref = collection(this.firestore, 'empresas', empresaId, 'polizas');
+        const q = query(ref);
+
+        onSnapshot(q, (snapshot) => {
+            const data: Poliza[] = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            })) as Poliza[];
+
+            this._polizas.set(data);
+        });
     }
-    // Agregar una nueva póliza
-    agregarPoliza(poliza: Poliza) {
-        this._polizas.update(p => [...p, poliza]);
+
+
+    // 💾 Crear o actualizar una póliza en Firebase
+    async guardarPoliza(poliza: Poliza) {
+        const empresaId = this.getEmpresaId();
+        if (!empresaId) return;
+
+        const ref = doc(this.firestore, 'empresas', empresaId, 'polizas', poliza.id!); // ✅ aseguramos que es string
+        await setDoc(ref, poliza, { merge: true });
     }
-    // Eliminar póliza por ID
-    eliminarPoliza(id: string) {
-        this._polizas.update(p => p.filter(poliza => poliza.id !== id));
+
+
+    // 🗑️ Eliminar póliza por ID
+    async eliminarPoliza(id: string) {
+        const empresaId = this.getEmpresaId();
+        if (!empresaId) return;
+
+        const ref = doc(this.firestore, 'empresas', empresaId, 'polizas', id);
+        await deleteDoc(ref);
     }
-    // Actualizar póliza existente
-    actualizarPoliza(poliza: Poliza) {
-        this._polizas.update(p =>
-            p.map(existing => existing.id === poliza.id ? poliza : existing)
-        );
-    }
-    // Obtener una póliza por ID
+
+    // 🔍 Obtener pólizas por cliente
     getPolizasPorCliente(clienteId: string): Poliza[] {
         return this._polizas().filter(p => String(p.clienteId) === String(clienteId));
     }
-    // Obtener todas las pólizas
-    getPolizaById(id: string): Poliza | undefined {
-        return this._polizas().find(poliza => poliza.id === id);
-    }
 
+    // 🔎 Obtener una póliza por ID
+    getPolizaById(id: string): Poliza | undefined {
+        return this._polizas().find(p => p.id === id);
+    }
 }
