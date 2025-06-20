@@ -5,11 +5,11 @@ import { ClientesService } from '../../../services/clientes.service';
 import { AseguradorasService } from '../../../services/aseguradoras.service';
 import { PolizasService } from '../../../services/polizas.service';
 import { FieldMeta } from '../../../utils/form-utils';
+import { DropdownSelect } from '../dropdown-select/dropdown-select';
 
 @Component({
   selector: 'app-table-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DropdownSelect],
   templateUrl: './table-form.html'
 })
 export class TableForm {
@@ -41,6 +41,19 @@ export class TableForm {
   // 🔄 Lista dinámica filtrada por cliente
   readonly polizasFiltradas = signal<{ id: string; label: string }[]>([]);
 
+  readonly opcionesClientes = computed(() =>
+    this.clientes().map(c => ({
+      value: c.id,
+      label: c.nombre
+    }))
+  );
+
+  readonly opcionesAseguradoras = computed(() =>
+    this.aseguradoras().map(a => ({
+      value: a.id,
+      label: a.nombre
+    }))
+  );
   constructor() {
     // ⚡️ Efecto reactivo: actualizar polizasFiltradas cuando cambia el cliente
     effect(() => {
@@ -76,5 +89,13 @@ export class TableForm {
   get usarDosColumnas(): boolean {
     return this.camposVisibles > 5;
   }
-  
+  // 🔄 Normaliza opciones de campos select
+  getOpcionesNormalizadas(campo: FieldMeta): { label: string; value: string }[] {
+    if (!campo.options) return [];
+    return campo.options.map(opt =>
+      typeof opt === 'string' ? { label: opt, value: opt } : opt
+    );
+  }
+
+
 }

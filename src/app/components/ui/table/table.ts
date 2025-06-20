@@ -31,6 +31,9 @@ export class Table {
   private readonly _rows = signal<any[]>([]);
   readonly searchQuery = signal('');
   readonly currentPage = signal(1);
+  readonly hasAnyRow = computed(() => this.rows.length > 0);
+  readonly hasVisibleRows = computed(() => this.paginatedRows().length > 0);
+
 
   // 🔁 Setter para rows: convierte a signal internamente
   @Input()
@@ -130,4 +133,11 @@ export class Table {
     this.searchQuery.set(value);
     this.currentPage.set(1);
   }
+
+  // 🔄 Limpiar búsqueda y reiniciar paginado
+  resetSearch() {
+    this.searchQuery.set('');
+    this.currentPage.set(1);
+  }
+  
 }

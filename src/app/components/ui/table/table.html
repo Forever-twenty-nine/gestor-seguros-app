@@ -1,7 +1,8 @@
 <div
     class="rounded-2xl shadow-sm bg-[var(--bg-primary)] border border-[var(--border-default)] overflow-hidden font-[var(--font-base)]">
 
-    @if (paginatedRows().length > 0) {
+    @if (hasVisibleRows()) {
+
 
     <!-- 🔍 Buscador + botón “Nuevo” -->
     <div
@@ -113,16 +114,20 @@
     </div>
     }
 
-    } @else {
-    <!-- 🧼 Estado vacío -->
+    }@else
+    {
+    @if (!hasAnyRow()) {
+    <!-- 🧼 Sin datos cargados -->
+    <!-- 🧼 Sin datos cargados -->
     <div class="flex flex-col items-center justify-center py-12 text-[var(--text-secondary)] text-sm space-y-4">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[var(--text-muted)]" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
+        <!-- Ícono: bandeja vacía -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m4 0V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10m4 0h6" />
+                d="M3 7h18M9 17h6m2 4H7a2 2 0 01-2-2V7h14v12a2 2 0 01-2 2z" />
         </svg>
         <p>No hay registros para mostrar.</p>
-
+    
         @if (showNuevo) {
         <button (click)="onNuevo()"
             class="px-4 py-2 bg-[var(--accent)] text-white text-sm rounded-md hover:bg-[var(--accent-hover)] transition">
@@ -130,7 +135,26 @@
         </button>
         }
     </div>
+
+
+    } @else {
+    <!-- 🔍 Búsqueda sin coincidencias -->
+    <!-- 🔍 Búsqueda sin coincidencias -->
+    <div class="flex flex-col items-center justify-center py-12 text-[var(--text-secondary)] text-sm space-y-4">
+        <!-- Ícono: lupa sin resultados -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm6-2l4 4" />
+        </svg>
+        <p>No se encontraron resultados para tu búsqueda.</p>
+    
+        <button (click)="resetSearch()"
+            class="px-4 py-2 bg-[var(--accent)] text-white text-sm rounded-md hover:bg-[var(--accent-hover)] transition">
+            Limpiar búsqueda
+        </button>
+    </div>
+    }
     }
 
 </div>
-  
