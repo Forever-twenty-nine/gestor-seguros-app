@@ -1,66 +1,70 @@
-<!-- Encabezado y botón agregar -->
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-xl font-bold">Clientes</h1>
-</div>
+<!-- Contenedor general con padding horizontal -->
+<div class="px-4 md:px-8 pt-6 space-y-6">
 
-<!-- Tabla -->
-<app-table [headers]="columnas" [displayedColumns]="campos" [rows]="clientes()" [actions]="acciones"
-  [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nuevo cliente'" [pageSize]="10"
-  (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)"></app-table>
+  <!-- 🧭 Encabezado y botón agregar -->
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+    <h1 class="text-2xl font-bold text-ebony-700 tracking-tight">Clientes</h1>
+  </div>
 
-<!-- Modal de detalle -->
-@if (clienteSeleccionado(); as cliente) {
-<app-table-detail [item]="cliente" title="Detalle del Cliente" entity="cliente" (cerrar)="cerrarDetalle()">
-  <!-- 🔗 Sección adicional: pólizas asociadas -->
-  @if (polizasDelCliente().length > 0) {
-  <div detalle-extra class="mt-4">
-    <h2 class="mb-2 text-sm text-gray-500 font-medium uppercase">Pólizas asociadas</h2>
-    <div class="space-y-2">
-      @for (poliza of polizasDelCliente(); track poliza.id) {
-      <div class="p-4 rounded-xl border border-gray-200 shadow-sm bg-gradient-to-r from-white to-gray-50">
-        <div class="flex justify-between items-center mb-2">
-          <h3 class="text-base font-bold text-blue-700">{{ poliza.tipoSeguro }}</h3>
-          <span class="text-xs px-2 py-1 rounded-full" [ngClass]="{
-        'bg-green-100 text-green-800': poliza.estado === 'vigente',
-        'bg-yellow-100 text-yellow-800': poliza.estado === 'por vencer',
-        'bg-red-100 text-red-800': poliza.estado === 'vencida'
-      }">
-            {{ poliza.estado | titlecase }}
-          </span>
-        </div>
+  <!-- 🧾 Tabla principal -->
+  <app-table [headers]="columnas" [displayedColumns]="campos" [rows]="clientes()" [actions]="acciones"
+    [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nuevo cliente'" [pageSize]="10"
+    (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)"></app-table>
 
-        <div class="text-sm text-gray-700 space-y-1">
-          <div><span class="font-medium text-gray-500">N°:</span> {{ poliza.numero }}</div>
-          <div><span class="font-medium text-gray-500">Inicio:</span> {{ formatearFechaLocal(poliza.fechaInicio) }}
+  <!-- 🧍‍♂️ Modal de detalle -->
+  @if (clienteSeleccionado(); as cliente) {
+  <app-table-detail [item]="cliente" title="Detalle del Cliente" entity="cliente" (cerrar)="cerrarDetalle()">
+    <!-- 🔗 Pólizas asociadas -->
+    @if (polizasDelCliente().length > 0) {
+    <div detalle-extra class="mt-6 space-y-2">
+      <h2 class="text-sm font-semibold text-waikawa-500 uppercase tracking-wide">Pólizas asociadas</h2>
+
+      <div class="space-y-3">
+        @for (poliza of polizasDelCliente(); track poliza.id) {
+        <div class="p-4 rounded-xl border border-waikawa-300 shadow-sm bg-gradient-to-r from-white to-london-100">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-base font-bold text-danube-500">{{ poliza.tipoSeguro }}</h3>
+            <span class="text-xs px-2 py-1 rounded-full" [ngClass]="{
+                      'bg-green-100 text-green-800': poliza.estado === 'vigente',
+                      'bg-yellow-100 text-yellow-800': poliza.estado === 'por vencer',
+                      'bg-red-100 text-red-800': poliza.estado === 'vencida'
+                    }">
+              {{ poliza.estado | titlecase }}
+            </span>
           </div>
-          <div><span class="font-medium text-gray-500">Vencimiento:</span> {{
-            formatearFechaLocal(poliza.fechaVencimiento) }}</div>
+
+          <div class="text-sm text-ebony-500 space-y-1">
+            <div><span class="font-medium text-waikawa-500">N°:</span> {{ poliza.numero }}</div>
+            <div><span class="font-medium text-waikawa-500">Inicio:</span> {{ formatearFechaLocal(poliza.fechaInicio) }}
+            </div>
+            <div><span class="font-medium text-waikawa-500">Vencimiento:</span> {{
+              formatearFechaLocal(poliza.fechaVencimiento) }}</div>
+          </div>
         </div>
+        }
       </div>
-
-
-      }
     </div>
-  </div>
-  } @else {
-  <div detalle-extra class="mt-4 text-sm text-gray-400 italic">
-    Este cliente no tiene pólizas asociadas.
-  </div>
+    } @else {
+    <div detalle-extra class="mt-4 text-sm text-waikawa-500/70 italic">
+      Este cliente no tiene pólizas asociadas.
+    </div>
+    }
+  </app-table-detail>
   }
-</app-table-detail>
-}
 
-<!-- Modal de formulario -->
-@if (formularioVisible()) {
-<app-table-form [title]="modoTexto()"
-  [textGuardar]="modoTexto() === 'Editar Cliente' ? 'Guardar cambios' : 'Crear cliente'" [textCancelar]="'Cancelar'"
-  [showGuardar]="true" [disableGuardar]="clienteForm.invalid" [form]="clienteForm" [fields]="formFields"
-  (cerrar)="cerrarFormulario()" (guardar)="guardarFormulario()" />
-}
+  <!-- 📝 Modal de formulario -->
+  @if (formularioVisible()) {
+  <app-table-form [title]="modoTexto()"
+    [textGuardar]="modoTexto() === 'Editar Cliente' ? 'Guardar cambios' : 'Crear cliente'" [textCancelar]="'Cancelar'"
+    [showGuardar]="true" [disableGuardar]="clienteForm.invalid" [form]="clienteForm" [fields]="formFields"
+    (cerrar)="cerrarFormulario()" (guardar)="guardarFormulario()" />
+  }
 
-<!-- Confirmación de eliminación -->
-@if (clienteParaEliminar(); as cliente) {
-<app-table-confirm title="¿Eliminar cliente?" [message]="'¿Estás seguro de eliminar a ' + cliente.nombre + '?'"
-  textCancelar="Cancelar" textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()"
-  (confirmar)="confirmarEliminacion()" />
-}
+  <!-- 🗑️ Confirmación de eliminación -->
+  @if (clienteParaEliminar(); as cliente) {
+  <app-table-confirm title="¿Eliminar cliente?" [message]="'¿Estás seguro de eliminar a ' + cliente.nombre + '?'"
+    textCancelar="Cancelar" textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()"
+    (confirmar)="confirmarEliminacion()" />
+  }
+
+</div>

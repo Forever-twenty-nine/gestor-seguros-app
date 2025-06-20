@@ -1,18 +1,18 @@
-<!-- 🧱 Contenedor principal -->
-<div class="bg-white rounded-2xl shadow ring-1 ring-gray-200 overflow-hidden sm:overflow-visible">
+<div
+    class="rounded-2xl shadow-sm bg-[var(--bg-primary)] border border-[var(--border-default)] overflow-hidden font-[var(--font-base)]">
 
     @if (paginatedRows().length > 0) {
+
     <!-- 🔍 Buscador + botón “Nuevo” -->
     <div
-        class="p-4 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        class="p-4 border-b border-[var(--border-default)] bg-[var(--bg-muted)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         @if (enableSearch) {
         <input type="text" (input)="onSearch($event)" placeholder="Buscar..."
-            class="w-full sm:max-w-xs px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200" />
+            class="w-full sm:max-w-xs px-3 py-2 text-sm border border-[var(--border-strong)] rounded-md focus:outline-none focus:ring focus:ring-[var(--accent)]" />
         }
-
         @if (showNuevo) {
         <button (click)="onNuevo()"
-            class="self-end sm:self-auto px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+            class="self-end sm:self-auto px-4 py-2 text-sm bg-[var(--accent)] text-white rounded-md hover:bg-[var(--accent-hover)] transition">
             {{ nuevoLabel }}
         </button>
         }
@@ -21,8 +21,9 @@
     <!-- 🖥 Vista escritorio -->
     <div class="hidden sm:block min-w-full overflow-x-auto">
         <div class="min-w-[500px]">
+
             <!-- Encabezado -->
-            <div class="grid gap-4 px-4 py-2 bg-gray-100 text-sm font-semibold text-gray-600 uppercase tracking-wide"
+            <div class="grid gap-4 px-4 py-2 bg-[var(--bg-muted)] text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wide border-b border-[var(--border-default)]"
                 [ngClass]="gridClass()">
                 @for (header of headers; track header) {
                 <div class="min-w-[100px] truncate">{{ header }}</div>
@@ -34,10 +35,10 @@
 
             <!-- Filas -->
             @for (row of paginatedRows(); track row.id) {
-            <div class="grid gap-4 px-4 py-3 text-sm border-b border-gray-100 items-center hover:bg-gray-50 transition"
+            <div class="grid gap-4 px-4 py-3 text-sm border-b border-[var(--border-default)] items-center hover:bg-[var(--bg-elevated)] transition"
                 [ngClass]="gridClass()">
                 @for (col of displayedColumns; track col) {
-                <div class="truncate text-gray-800 min-w-[100px]">
+                <div class="truncate text-[var(--text-primary)] min-w-[100px]">
                     {{ getValorFormateado(col, row[col]) }}
                 </div>
                 }
@@ -47,10 +48,10 @@
                     @for (action of actions; track action) {
                     <button (click)="onAction(action, row)"
                         class="px-3 py-1 rounded-full text-xs font-semibold transition" [ngClass]="{
-                      'bg-blue-100 text-blue-800 hover:bg-blue-200': action === 'ver',
-                      'bg-green-100 text-green-800 hover:bg-green-200': action === 'editar',
-                      'bg-red-100 text-red-800 hover:bg-red-200': action === 'eliminar'
-                    }">
+              'bg-[var(--danube-100)] text-[var(--accent-hover)] hover:bg-[var(--danube-300)]': action === 'ver',
+              'bg-[var(--success-bg)] text-[var(--success)] hover:brightness-95': action === 'editar',
+              'bg-[var(--coral-100)] text-[var(--danger)] hover:bg-[var(--coral-300)]': action === 'eliminar'
+            }">
                         {{ action | titlecase }}
                     </button>
                     }
@@ -61,13 +62,13 @@
         </div>
     </div>
 
-    <!-- 📱 Vista móvil como tarjetas -->
-    <div class="sm:hidden divide-y divide-gray-100 space-y-4 px-2">
+    <!-- 📱 Vista móvil -->
+    <div class="sm:hidden divide-y divide-[var(--border-default)] space-y-4 px-2">
         @for (row of paginatedRows(); track row.id) {
-        <div class="px-4 py-4 text-sm text-gray-800 bg-white shadow-sm rounded-xl mb-2">
+        <div class="px-4 py-4 text-sm text-[var(--text-primary)] bg-[var(--bg-primary)] shadow-sm rounded-xl mb-2">
             @for (col of displayedColumns; track col) {
             <div class="mb-2">
-                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide block">
+                <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide block">
                     {{ headers[displayedColumns.indexOf(col)] }}
                 </span>
                 <span>{{ getValorFormateado(col, row[col]) }}</span>
@@ -79,10 +80,10 @@
                 @for (action of actions; track action) {
                 <button (click)="onAction(action, row)" class="px-3 py-1 rounded-full text-xs font-semibold transition"
                     [ngClass]="{
-                    'bg-blue-100 text-blue-800 hover:bg-blue-200': action === 'ver',
-                    'bg-green-100 text-green-800 hover:bg-green-200': action === 'editar',
-                    'bg-red-100 text-red-800 hover:bg-red-200': action === 'eliminar'
-                  }">
+            'bg-[var(--danube-100)] text-[var(--accent-hover)] hover:bg-[var(--danube-300)]': action === 'ver',
+            'bg-[var(--success-bg)] text-[var(--success)] hover:brightness-95': action === 'editar',
+            'bg-[var(--coral-100)] text-[var(--danger)] hover:bg-[var(--coral-300)]': action === 'eliminar'
+          }">
                     {{ action | titlecase }}
                 </button>
                 }
@@ -94,17 +95,18 @@
 
     <!-- 📄 Paginación -->
     @if (mostrarPaginacion()) {
-    <div class="flex justify-between items-center px-4 py-3 border-t border-gray-100 text-sm bg-gray-50">
-        <div class="text-gray-500">
+    <div
+        class="flex justify-between items-center px-4 py-3 border-t border-[var(--border-default)] text-sm bg-[var(--bg-muted)] text-[var(--text-secondary)]">
+        <div>
             Página {{ currentPage() }} de {{ totalPages() }}
         </div>
         <div class="flex gap-2">
             <button (click)="changePage(-1)" [disabled]="currentPage() === 1"
-                class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-50">
+                class="px-3 py-1 bg-[var(--bg-muted)] rounded hover:bg-[var(--bg-elevated)] disabled:opacity-50">
                 ← Anterior
             </button>
             <button (click)="changePage(1)" [disabled]="currentPage() === totalPages()"
-                class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-50">
+                class="px-3 py-1 bg-[var(--bg-muted)] rounded hover:bg-[var(--bg-elevated)] disabled:opacity-50">
                 Siguiente →
             </button>
         </div>
@@ -113,9 +115,9 @@
 
     } @else {
     <!-- 🧼 Estado vacío -->
-    <div class="flex flex-col items-center justify-center py-12 text-gray-500 text-sm space-y-4">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
+    <div class="flex flex-col items-center justify-center py-12 text-[var(--text-secondary)] text-sm space-y-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[var(--text-muted)]" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m4 0V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10m4 0h6" />
         </svg>
@@ -123,10 +125,12 @@
 
         @if (showNuevo) {
         <button (click)="onNuevo()"
-            class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition">
+            class="px-4 py-2 bg-[var(--accent)] text-white text-sm rounded-md hover:bg-[var(--accent-hover)] transition">
             {{ nuevoLabel }}
         </button>
         }
     </div>
     }
+
 </div>
+  

@@ -1,53 +1,57 @@
-<div class="flex h-screen overflow-hidden bg-gray-50 text-gray-900">
+<!-- 🌐 Layout base -->
+<div class="flex h-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
 
   <!-- 🧱 Sidebar -->
-  <aside class="fixed z-40 inset-y-0 left-0 w-64 bg-gray-800 text-white shadow-lg transform transition-transform duration-300 ease-in-out
-         md:static md:translate-x-0 md:transform-none md:flex md:flex-col border-r border-gray-700"
+  <aside class="fixed z-40 inset-y-0 left-0 w-64 bg-[var(--bg-strong)] text-[var(--text-inverse)]
+         shadow-lg transform transition-transform duration-300 ease-in-out
+         md:static md:translate-x-0 md:transform-none md:flex md:flex-col border-r border-[var(--border-default)]"
     [class.-translate-x-full]="!menuAbierto && screenIsMobile" [class.translate-x-0]="menuAbierto || !screenIsMobile">
-
     <!-- Header compensador en móvil -->
     <div class="h-[56px] md:hidden"></div>
 
     <!-- Logo -->
-    <!-- Logo -->
     <div class="text-center my-6 md:block hidden">
-      <a routerLink="/" class="text-2xl font-bold tracking-wide text-white select-none">
-        Gestor Seguros
+      <a routerLink="/" class="text-xl font-bold tracking-wide text-[var(--text-inverse)] select-none">
+        Gestor&nbsp;Seguros
       </a>
     </div>
-
 
     <!-- Navegación -->
     <nav class="flex-1 flex flex-col justify-between px-4 pb-6">
       <ul class="space-y-2 text-sm font-medium">
         @for (link of navLinks; track link) {
         <li>
-          <a [routerLink]="link.route" routerLinkActive="bg-gray-700"
-            class="block text-center px-4 py-2 rounded-lg hover:bg-gray-700 transition" (click)="cerrarMenuEnMovil()">
+          <a [routerLink]="link.route" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]" class="block text-center px-4 py-2 rounded-lg transition
+                   hover:bg-[var(--bg-nav-active)] hover:text-[var(--text-inverse)]" (click)="cerrarMenuEnMovil()">
             {{ link.label }}
           </a>
+
         </li>
         }
       </ul>
 
       <!-- Usuario -->
-      <div class="mt-6 pt-4 border-t border-gray-700 text-center text-sm">
+      <div class="mt-6 pt-4 border-t border-[var(--border-default)] text-center text-sm">
         @if (user !== null) {
         <p class="font-semibold">{{ user.nombre }}</p>
-        <button (click)="logout()" class="text-red-500 hover:underline mt-1">Cerrar sesión</button>
+        <button (click)="logout()" class="text-[var(--danger)] hover:underline mt-1">
+          Cerrar sesión
+        </button>
         } @else {
-        <p class="italic text-gray-400">Cargando usuario...</p>
+        <p class="italic text-[var(--text-secondary-muted)]">
+          Cargando usuario...</p>
         }
       </div>
     </nav>
   </aside>
 
   <!-- 📱 Header móvil -->
-  <header
-    class="md:hidden fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-4 py-3 bg-gray-800 text-white shadow">
-    <span class="text-lg font-semibold">Gestor Seguros</span>
-    <button (click)="menuAbierto = !menuAbierto" class="focus:outline-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <header class="  md:hidden fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-4 py-3
+    bg-[var(--bg-header-mobile)] text-[var(--text-inverse)] border-b border-[var(--border-default)]">
+    <span class="font-semibold">Gestor&nbsp;Seguros</span>
+    <button (click)="menuAbierto = !menuAbierto" class="outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stroke-[var(--text-inverse)]" fill="none"
+        viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
       </svg>
     </button>
@@ -59,5 +63,4 @@
       <router-outlet></router-outlet>
     </div>
   </main>
-
 </div>

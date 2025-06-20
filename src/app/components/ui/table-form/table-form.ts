@@ -68,4 +68,13 @@ export class TableForm {
 
     return valor ?? '';
   }
+  // metodo par hacer dos columnas
+  get camposVisibles(): number {
+    return this.fields.filter(f => f.type !== 'hidden').length;
+  }
+
+  get usarDosColumnas(): boolean {
+    return this.camposVisibles > 5;
+  }
+  
 }
