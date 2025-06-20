@@ -1,132 +1,141 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ClientesService } from '../../services/clientes.service';
 import { ToastService } from '../../services/toast.service';
 import { Cliente } from '../../models/cliente.model';
 import { Table } from '../../components/ui/table/table';
 import { TableDetail } from '../../components/ui/table-detail/table-detail';
-// forms
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FieldMeta, camposCliente, generateFormGroup,mapRowToForm } from '../../utils/form-utils';
-
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FieldMeta, camposCliente, generateFormGroup, mapRowToForm,formatearFechaLocal } from '../../utils/form-utils';
 import { TableForm } from '../../components/ui/table-form/table-form';
 import { CommonModule } from '@angular/common';
-// table confirm
 import { TableConfirm } from '../../components/ui/table-confirm/table-confirm';
-// polizas
 import { PolizasService } from '../../services/polizas.service';
 import { Poliza } from '../../models/poliza.model';
 
-
 @Component({
   selector: 'app-clientes',
+  standalone: true,
   imports: [Table, TableDetail, TableForm, CommonModule, ReactiveFormsModule, TableConfirm],
   templateUrl: './clientes.html'
 })
 export class Clientes {
-
+  // 🧩 Inyecciones
   private clientesService = inject(ClientesService);
   private fb = inject(FormBuilder);
   private toast = inject(ToastService);
-
   private polizasService = inject(PolizasService);
+  formatearFechaLocal = formatearFechaLocal;
 
-  polizasDelCliente = signal<Poliza[]>([]);
 
-
-  clientes = this.clientesService.clientes;
-
+  // 📄 Campos visibles en la tabla
   columnas = ['Nombre', 'Teléfono', 'Email'];
   campos = ['nombre', 'telefono', 'email'];
   acciones = ['ver', 'editar', 'eliminar'];
 
-  clienteSeleccionado: Cliente | null = null;
+  // 🧠 Señales reactivas
+  clientes = this.clientesService.clientes;
+  clienteSeleccionado = signal<Cliente | null>(null);
+  clienteParaEliminar = signal<Cliente | null>(null);
+  polizasDelCliente = signal<Poliza[]>([]);
+  modoEdicion = signal(false);
+  formularioVisible = signal(false);
 
-  constructor() {
-    
-  }
-
-  modoEdicion = false;
-  // Controla la visibilidad del formulario
-  formularioVisible = false;
-  // Campos del formulario, generados a partir de la configuración
+  // 🧾 Meta de formulario y grupo reactivo
   formFields: FieldMeta[] = camposCliente;
-  // Formulario reactivo para crear/editar clientes
   clienteForm = this.fb.group({
     ...generateFormGroup(this.fb, this.formFields).controls,
     id: this.fb.control(''),
-    empresaId: this.fb.control('empresa1'),
+    empresaId: this.fb.control('')
   });
 
-  // Método para manejar las acciones de la tabla
+  // 🧮 Computado: texto del botón y título del formulario
+  modoTexto = computed(() => this.modoEdicion() ? 'Editar Cliente' : 'Nuevo Cliente');
+
+  // ⚡️ Efecto: cargar pólizas al seleccionar un cliente
+  constructor() {
+    effect(() => {
+      const cliente = this.clienteSeleccionado();
+      if (cliente) {
+        const polizas = this.polizasService.getPolizasPorCliente(cliente.id!);
+        this.polizasDelCliente.set(polizas);
+      }
+    });
+  }
+
+  // 📦 Manejador de acciones de tabla
   manejarAccion(event: { action: string; row: Cliente }) {
     if (event.action === 'ver') {
-      this.clienteSeleccionado = event.row;
-      this.polizasDelCliente.set(
-        this.polizasService.getPolizasPorCliente(event.row.id!)
-      );
-    }
-    else if (event.action === 'editar') {
-      this.modoEdicion = true;
-      this.clienteForm.setValue(
-        mapRowToForm<Cliente>(event.row, this.clienteForm)
-      );
-      
-      this.formularioVisible = true;
+      this.clienteSeleccionado.set(event.row);
+    } else if (event.action === 'editar') {
+      this.modoEdicion.set(true);
+      this.clienteForm.setValue(mapRowToForm<Cliente>(event.row, this.clienteForm));
+      this.formularioVisible.set(true);
     } else if (event.action === 'eliminar') {
       this.abrirConfirmacionEliminar(event.row);
     }
-
   }
-  // Método para abrir el formulario en modo edición
+
+  // ➕ Abrir formulario para nuevo cliente
   abrirFormulario() {
-    this.modoEdicion = false;
-    this.clienteForm.reset({ empresaId: 'empresa1' });
-    this.formularioVisible = true;
+    this.modoEdicion.set(false);
+    this.clienteForm.reset(); // empresaId lo asigna el servicio
+    this.formularioVisible.set(true);
   }
 
-  // Método para cerrar el formulario
+  // ❌ Cerrar formulario
   cerrarFormulario() {
-    this.formularioVisible = false;
+    this.formularioVisible.set(false);
   }
-  // Método para guardar el formulario
-  guardarFormulario() {
-    const cliente = this.clienteForm.value as Cliente;
-    if (this.modoEdicion) {
-      this.clientesService.actualizarCliente(cliente);
-      this.toast.show('Cliente actualizado con éxito', 'success');
-    } else {
-      cliente.id = crypto.randomUUID();
-      this.clientesService.agregarCliente(cliente);
-      this.toast.show('Cliente creado con éxito', 'success');
+
+  // 💾 Guardar o actualizar cliente
+  async guardarFormulario() {
+    const cliente = this.clienteForm.getRawValue() as Cliente;
+
+    try {
+      await this.clientesService.guardarCliente(cliente);
+      this.toast.show(
+        this.modoEdicion() ? 'Cliente actualizado con éxito' : 'Cliente creado con éxito',
+        'success'
+      );
+      this.formularioVisible.set(false);
+    } catch (error) {
+      console.error('Error al guardar cliente:', error);
+      this.toast.show('Error al guardar el cliente', 'error');
     }
-    this.formularioVisible = false;
   }
-  // Método para manejar las acciones de las pólizas
+
+  // 📌 Cerrar detalle de cliente
+  cerrarDetalle() {
+    this.clienteSeleccionado.set(null);
+  }
+
+  // 🗑 Confirmar eliminación
+  abrirConfirmacionEliminar(cliente: Cliente) {
+    this.clienteParaEliminar.set(cliente);
+  }
+
+  cancelarEliminacion() {
+    this.clienteParaEliminar.set(null);
+  }
+
+  async confirmarEliminacion() {
+    const cliente = this.clienteParaEliminar();
+    if (!cliente) return;
+
+    try {
+      await this.clientesService.eliminarCliente(cliente.id!);
+      this.toast.show('Cliente eliminado con éxito', 'success');
+      this.clienteParaEliminar.set(null);
+    } catch (error) {
+      console.error('Error al eliminar cliente:', error);
+      this.toast.show('Error al eliminar el cliente', 'error');
+    }
+  }
+
+  // 📑 Manejador de acciones de pólizas asociadas
   manejarAccionPoliza(event: { action: string, row: Poliza }) {
     if (event.action === 'ver') {
       this.toast.show('Ver póliza ' + event.row.tipoSeguro, 'info');
-      // En el futuro: abrir modal detalle de póliza
     }
   }
-  // Método para cerrar el detalle del cliente
-  cerrarDetalle() {
-    this.clienteSeleccionado = null;
-  }
-  // Variable para manejar la confirmación de eliminación
-  clienteParaEliminar: Cliente | null = null;
-  // Método para abrir la confirmación de eliminación
-  abrirConfirmacionEliminar(cliente: Cliente) {
-    this.clienteParaEliminar = cliente;
-  }
-  // Método para cancelar la eliminación del cliente
-  cancelarEliminacion() {
-    this.clienteParaEliminar = null;
-  }
-  // Método para confirmar la eliminación del cliente
-  confirmarEliminacion() {
-    this.clientesService.eliminarCliente(this.clienteParaEliminar!.id!);
-    this.toast.show('Cliente eliminado con éxito', 'success');
-    this.clienteParaEliminar = null;
-  }
-
 }

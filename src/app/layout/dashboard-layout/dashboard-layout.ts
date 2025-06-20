@@ -6,7 +6,6 @@ import { UserService } from '../../services/user.service';
 import { EmpresaService } from '../../services/empresa.service';
 
 
-
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
@@ -17,13 +16,27 @@ import { EmpresaService } from '../../services/empresa.service';
 export class DashboardLayout {
   private auth = inject(AuthService);
   private userService = inject(UserService);
-  private empresaService = inject(EmpresaService);
 
-  empresaIncompleta = computed(() => {
-    const empresa = this.empresaService.empresa();
-    const user = this.userService.usuario();
-    return user?.rol === 'admin' && (!empresa?.nombre || empresa.nombre.trim() === '');
-  });
+  menuAbierto = false;
+
+navLinks = [
+  { label: 'Clientes', route: '/clientes' },
+  { label: 'Pólizas', route: '/polizas' },
+  { label: 'Siniestros', route: '/siniestros' },
+  { label: 'Alertas', route: '/alertas' },
+  { label: 'Aseguradoras', route: '/aseguradoras' },
+  { label: 'Perfil', route: '/perfil' }
+];
+
+// Detecta si estamos en mobile
+get screenIsMobile() {
+  return window.innerWidth < 768;
+}
+
+cerrarMenuEnMovil() {
+  if (this.screenIsMobile) this.menuAbierto = false;
+}
+
 
   get user() {
     return this.userService.usuario();

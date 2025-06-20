@@ -1,9 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import { EmpresaService } from '../../../services/empresa.service';
-import { Empresa } from '../../../models/empresa.model';
 import { ToastService } from '../../../services/toast.service';
 import { Router } from '@angular/router';
 import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
@@ -22,67 +21,75 @@ export class PerfilCuenta {
   private toast = inject(ToastService);
   private router = inject(Router);
 
-  usuario = signal(this.userService.usuario());
-  empresa = this.empresaService.empresa;
-  cargando = signal(false);
+  readonly usuario = signal(this.userService.usuario());
+  readonly empresa = this.empresaService.empresa;
+  readonly cargando = signal(false);
+  readonly empresaCargada = computed(() => !!this.empresa());
 
-  form = this.fb.group({
-    nombreUsuario: [this.usuario()?.nombre ?? '', Validators.required],
-    nombreEmpresa: [this.empresa()?.nombre ?? '', Validators.required],
-    diasAnticipacion: [this.empresa()?.configAlertas.diasAnticipacion ?? 30, Validators.required],
+  readonly form = this.fb.group({
+    nombreUsuario: ['', [Validators.required, Validators.maxLength(50)]],
+    nombreEmpresa: ['', [Validators.required, Validators.maxLength(50)]],
+    diasAnticipacion: [30, [Validators.required, Validators.min(1), Validators.max(90)]],
     metodos: this.fb.group({
-      email: [this.empresa()?.configAlertas.metodos.includes('email')],
-      visual: [this.empresa()?.configAlertas.metodos.includes('visual')],
+      email: [false],
+      visual: [true],
     }),
   });
 
-  ngOnInit() {
+  constructor() {
+    // Cargar empresa desde Firestore si hace falta
+    effect(() => this.loadEmpresaIfNeeded());
+
+    // Sincronizar formulario cuando hay datos
+    effect(() => this.syncFormWithEmpresa());
+  }
+
+  private loadEmpresaIfNeeded() {
+    const u = this.usuario();
     const e = this.empresa();
-    if (e) {
-      this.patchForm(e);
-    } else {
-      const user = this.usuario();
-      if (user?.empresaId) {
-        this.empresaService.cargarEmpresaDesdeFirestore(user.empresaId).then(() => {
-          const nueva = this.empresa();
-          if (nueva) this.patchForm(nueva);
-        });
-      }
+
+    if (u?.empresaId && !e) {
+      this.empresaService.cargarEmpresaDesdeFirestore(u.empresaId);
     }
   }
 
-  private patchForm(e: Empresa) {
-    this.form.patchValue({
-      nombreEmpresa: e.nombre,
-      diasAnticipacion: e.configAlertas.diasAnticipacion,
-      metodos: {
-        email: e.configAlertas.metodos.includes('email'),
-        visual: e.configAlertas.metodos.includes('visual'),
-      },
-    });
+  private syncFormWithEmpresa() {
+    const u = this.usuario();
+    const e = this.empresa();
+
+    if (u && e) {
+      this.form.patchValue({
+        nombreUsuario: u.nombre,
+        nombreEmpresa: e.nombre,
+        diasAnticipacion: e.configAlertas?.diasAnticipacion ?? 30,
+        metodos: {
+          email: e.configAlertas?.metodos.includes('email'),
+          visual: e.configAlertas?.metodos.includes('visual'),
+        }
+      });
+    }
   }
-
-
+  // Resetear formulario
   async guardarTodo() {
-    const usuario = this.usuario();
-    const empresa = this.empresa();
-
-    if (!usuario || !empresa || this.form.invalid) return;
+    const u = this.usuario();
+    const e = this.empresa();
+    if (!u || !e || this.form.invalid) return;
 
     this.cargando.set(true);
     const { nombreUsuario, nombreEmpresa, diasAnticipacion, metodos } = this.form.value;
+
     const metodosSeleccionados: ('email' | 'visual')[] = [];
     if (metodos?.email) metodosSeleccionados.push('email');
     if (metodos?.visual) metodosSeleccionados.push('visual');
 
     try {
-      const empresaInicialSinNombre = !empresa.nombre?.trim();
+      const sinNombreInicial = !e.nombre?.trim();
 
-      await updateDoc(doc(this.firestore, 'users', usuario.id), {
+      await updateDoc(doc(this.firestore, 'users', u.id), {
         nombre: nombreUsuario ?? '',
       });
 
-      await updateDoc(doc(this.firestore, 'empresas', empresa.id), {
+      await updateDoc(doc(this.firestore, 'empresas', e.id), {
         nombre: nombreEmpresa ?? '',
         configAlertas: {
           diasAnticipacion: diasAnticipacion ?? 30,
@@ -90,23 +97,21 @@ export class PerfilCuenta {
         },
       });
 
-      this.userService.setUsuario({ ...usuario, nombre: nombreUsuario ?? '' });
-      await this.empresaService.cargarEmpresaDesdeFirestore(empresa.id); // refresca
+      this.userService.setUsuario({ ...u, nombre: nombreUsuario ?? '', empresaNombre: nombreEmpresa ?? '' });
+      await this.empresaService.cargarEmpresaDesdeFirestore(e.id);
 
       this.toast.show('Cuenta actualizada correctamente', 'success');
 
-      // ✅ Redirigir solo si era primera vez
-      if (empresaInicialSinNombre && nombreEmpresa?.trim()) {
+      if (sinNombreInicial && nombreEmpresa?.trim()) {
         this.toast.show('Bienvenido/a, ¡tu cuenta está lista para comenzar!', 'success');
-        setTimeout(() => {
-          this.router.navigateByUrl('/dashboard');
-        }, 1000); // da un segundo para ver el mensaje
+        setTimeout(() => this.router.navigateByUrl('/dashboard'), 1000);
       }
 
     } catch {
       this.toast.show('Hubo un error al guardar los datos', 'error');
+    } finally {
+      this.cargando.set(false);
     }
-
   }
 
   getUsuariosPermitidos() {

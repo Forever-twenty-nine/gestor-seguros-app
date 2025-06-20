@@ -11,7 +11,6 @@ export const MOCK_POLIZAS: Poliza[] = [
         fechaVencimiento: new Date('2025-01-01'),
         montoAsegurado: 1500000,
         estado: 'vigente',
-        empresaId: 'empresa1',
         adjuntos: [],
         numero: 'POL123456'
     },
@@ -24,7 +23,6 @@ export const MOCK_POLIZAS: Poliza[] = [
         fechaVencimiento: new Date('2023-06-10'),
         montoAsegurado: 800000,
         estado: 'vencida',
-        empresaId: 'empresa1',
         adjuntos: [],
         numero: 'POL223344'
     },
@@ -39,7 +37,6 @@ export const MOCK_POLIZAS: Poliza[] = [
         fechaVencimiento: new Date('2024-09-15'),
         montoAsegurado: 500000,
         estado: 'por vencer',
-        empresaId: 'empresa1',
         adjuntos: [],
         numero: 'POL654321'
     },
@@ -54,7 +51,6 @@ export const MOCK_POLIZAS: Poliza[] = [
         fechaVencimiento: new Date('2025-03-01'),
         montoAsegurado: 1200000,
         estado: 'vigente',
-        empresaId: 'empresa1',
         adjuntos: [],
         numero: 'POL991122'
     },
@@ -69,7 +65,6 @@ export const MOCK_POLIZAS: Poliza[] = [
         fechaVencimiento: new Date('2024-01-01'),
         montoAsegurado: 900000,
         estado: 'por vencer',
-        empresaId: 'empresa1',
         adjuntos: [],
         numero: 'POL334455'
     },
@@ -82,7 +77,6 @@ export const MOCK_POLIZAS: Poliza[] = [
         fechaVencimiento: new Date('2023-11-01'),
         montoAsegurado: 700000,
         estado: 'vencida',
-        empresaId: 'empresa1',
         adjuntos: [],
         numero: 'POL778899'
     },
@@ -97,7 +91,6 @@ export const MOCK_POLIZAS: Poliza[] = [
         fechaVencimiento: new Date('2025-04-01'),
         montoAsegurado: 600000,
         estado: 'vigente',
-        empresaId: 'empresa1',
         adjuntos: [],
         numero: 'POL445566'
     }

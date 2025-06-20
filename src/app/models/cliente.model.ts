@@ -5,5 +5,5 @@ export interface Cliente {
     telefono: number;
     email: string;
     direccion: string;
-    empresaId: string;// relacion con la empresa a la que pertenece el cliente
+    empresaId: string;
 }

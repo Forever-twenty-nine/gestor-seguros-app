@@ -5,4 +5,5 @@ export interface User {
   rol: 'admin' | 'empleado';
   empresaId: string;
   activo: boolean;
+  empresaNombre?: string; 
 }

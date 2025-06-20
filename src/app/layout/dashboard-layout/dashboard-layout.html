@@ -1,83 +1,63 @@
-@if (empresaIncompleta()) {
-<div class="bg-yellow-100 text-yellow-900 px-4 py-3 text-sm border-b border-yellow-300">
-  ⚠️ Para continuar usando la app, primero completá los datos de tu empresa desde <a routerLink="/perfil"
-    class="underline font-medium text-yellow-800 hover:text-yellow-600">tu perfil</a>.
-</div>
-}
+<div class="flex h-screen overflow-hidden bg-gray-50 text-gray-900">
 
+  <!-- 🧱 Sidebar -->
+  <aside class="fixed z-40 inset-y-0 left-0 w-64 bg-gray-800 text-white shadow-lg transform transition-transform duration-300 ease-in-out
+         md:static md:translate-x-0 md:transform-none md:flex md:flex-col border-r border-gray-700"
+    [class.-translate-x-full]="!menuAbierto && screenIsMobile" [class.translate-x-0]="menuAbierto || !screenIsMobile">
 
-<div class="flex min-h-screen bg-gray-50 text-gray-900">
-  <!-- Sidebar oscuro -->
-  <aside class="w-64 hidden md:flex flex-col bg-gray-800 text-white shadow-lg border-r border-gray-700 px-6 py-8"
-    @fadeIn>
+    <!-- Header compensador en móvil -->
+    <div class="h-[56px] md:hidden"></div>
+
     <!-- Logo -->
-    <a routerLink="/" class="mb-12 block text-center">
-      <span class="text-3xl font-bold tracking-wide text-white select-none">Gestor Seguros</span>
-    </a>
+    <!-- Logo -->
+    <div class="text-center my-6 md:block hidden">
+      <a routerLink="/" class="text-2xl font-bold tracking-wide text-white select-none">
+        Gestor Seguros
+      </a>
+    </div>
+
 
     <!-- Navegación -->
-    <nav class="flex-1 flex flex-col justify-between">
-      <ul class="flex flex-col gap-4 text-base font-semibold text-white">
+    <nav class="flex-1 flex flex-col justify-between px-4 pb-6">
+      <ul class="space-y-2 text-sm font-medium">
+        @for (link of navLinks; track link) {
         <li>
-          <a routerLink="/clientes" routerLinkActive="bg-gray-700"
-            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
-            Clientes
+          <a [routerLink]="link.route" routerLinkActive="bg-gray-700"
+            class="block text-center px-4 py-2 rounded-lg hover:bg-gray-700 transition" (click)="cerrarMenuEnMovil()">
+            {{ link.label }}
           </a>
         </li>
-        <li>
-          <a routerLink="/polizas" routerLinkActive="bg-gray-700"
-            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
-            Pólizas
-          </a>
-        </li>
-        <li>
-          <a routerLink="/siniestros" routerLinkActive="bg-gray-700"
-            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
-            Siniestros
-          </a>
-        </li>
-        <li>
-          <a routerLink="/alertas" routerLinkActive="bg-gray-700"
-            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
-            Alertas
-          </a>
-        </li>
-        <li>
-          <a routerLink="/aseguradoras" routerLinkActive="bg-gray-700"
-            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
-            Aseguradoras
-          </a>
-        </li>
-        <li>
-          <a routerLink="/perfil" routerLinkActive="bg-gray-700"
-            class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition text-center">
-            Perfil
-          </a>
-
-        </li>
+        }
       </ul>
 
-      <!-- Información del usuario -->
-      <div class="mt-12 pt-4 border-t border-gray-700 text-center">
+      <!-- Usuario -->
+      <div class="mt-6 pt-4 border-t border-gray-700 text-center text-sm">
         @if (user !== null) {
-        <p class="text-sm font-semibold">{{ user.nombre }}</p>
-        <p class="text-xs text-gray-400">
-          {{ user.rol === 'admin' ? 'Administrador' : 'Empleado' }}
-        </p>
-        <!-- Botón de cerrar sesión -->
-        <button (click)="logout()" class="text-sm text-red-600 hover:underline">Cerrar sesión</button>
-
+        <p class="font-semibold">{{ user.nombre }}</p>
+        <button (click)="logout()" class="text-red-500 hover:underline mt-1">Cerrar sesión</button>
         } @else {
-        <p class="text-sm italic text-gray-400">Cargando usuario...</p>
+        <p class="italic text-gray-400">Cargando usuario...</p>
         }
       </div>
     </nav>
   </aside>
 
-  <!-- Contenido principal -->
-  <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+  <!-- 📱 Header móvil -->
+  <header
+    class="md:hidden fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-4 py-3 bg-gray-800 text-white shadow">
+    <span class="text-lg font-semibold">Gestor Seguros</span>
+    <button (click)="menuAbierto = !menuAbierto" class="focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </header>
+
+  <!-- 🧾 Contenido principal -->
+  <main class="flex-1 pt-[56px] md:pt-0 px-4 md:px-8 overflow-y-auto">
     <div class="max-w-7xl mx-auto">
       <router-outlet></router-outlet>
     </div>
   </main>
+
 </div>
