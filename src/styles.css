@@ -1,2 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
+/* ① Importa Tailwind y define tus tokens ------------------- */
 @import "tailwindcss";
+
+/* ---------- PALETA (modo claro) ---------- */
+@theme {
+    /* Escala 500 porque es un único tono — puedes añadir 50-900 luego */
+    --color-ebony-500: #242b36;
+    /* Fondo base / texto primario     */
+    --color-waikawa-500: #6574aa;
+    /* Elementos intermedios           */
+    --color-london-500: #beacc8;
+    /* Tarjetas / fondos suaves        */
+    --color-danube-500: #6da7cb;
+    /* CTA / links / hover             */
+    --color-coral-500: #f78c6b;
+    /* Destacado cálido (badges, etc.) */
+}
+
+/* ② Dark mode automático (prefers-color-scheme) ------------- */
+/*    Puedes sustituir esta media-query por la estrategia .dark */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Basta con redefinir las variables — las utilidades ya existen */
+        --color-ebony-500: #1b212a;
+        --color-waikawa-500: #55638f;
+        --color-london-500: #a99bb6;
+        --color-danube-500: #5a8db3;
+        --color-coral-500: #d97a5f;
+    }
+}
+
+/* ③ (Optativo) Alias semánticos como variables normales ----- */
+/*    Úsalos en CSS o con la sintaxis bg-[var(--bg-primary)]   */
+:root {
+    --bg-primary: var(--color-ebony-500);
+    --text-primary: #ffffff;
+    --text-secondary: var(--color-london-500);
+    --accent-main: var(--color-danube-500);
+    --accent-warm: var(--color-coral-500);
+}
