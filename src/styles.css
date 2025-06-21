@@ -5,105 +5,38 @@
 /* 🎨 TOKENS BASE: Definición de paleta (modo claro) */
 /* ─────────────────────────────────────────────── */
 :root {
-    /* EBONY (oscuros / texto principal) */
-    --ebony-900: #1b212a;
-    --ebony-700: #242b36;
-    --ebony-500: #3a4251;
-    --ebony-300: #5a6371;
+    /* 🌕 Modo claro */
 
-    /* WAIKAWA (borde, encabezado) */
-    --waikawa-100: #dbe3f0;
-    --waikawa-300: #9aa6c5;
-    --waikawa-500: #6574aa;
-    --waikawa-700: #4b5784;
-
-    /* LONDON (fondo suave, lavanda) */
-    --london-100: #f0e9f3;
-    --london-300: #d9cadd;
-    --london-500: #beacc8;
-    --london-700: #9c89a5;
-
-    /* DANUBE (azul CTA) */
-    --danube-100: #d5eaf7;
-    --danube-300: #99ccee;
-    --danube-500: #6da7cb;
-    --danube-700: #497aa0;
-
-    /* CORAL (errores, advertencias) */
-    --coral-100: #ffe1d6;
-    --coral-300: #fcb89d;
-    --coral-500: #f78c6b;
-    --coral-700: #d4684a;
-
-    /* Neutro */
-    --surface-50: #f9fafb;
-}
-
-/* 🌙 MODO OSCURO: Override de tokens */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --ebony-900: #0f1217;
-        --ebony-700: #1b212a;
-        --ebony-500: #2a313d;
-        --ebony-300: #4b5563;
-
-        --waikawa-100: #2e3447;
-        --waikawa-300: #3f4a63;
-        --waikawa-500: #55638f;
-        --waikawa-700: #3b4768;
-
-        --london-100: #2f2a30;
-        --london-300: #6b6074;
-        --london-500: #a99bb6;
-        --london-700: #d3c8e3;
-
-        --danube-100: #243646;
-        --danube-300: #467597;
-        --danube-500: #5a8db3;
-        --danube-700: #3d6a89;
-
-        --coral-100: #40241d;
-        --coral-300: #9f4d3a;
-        --coral-500: #d97a5f;
-        --coral-700: #f2a792;
-
-        --surface-50: #12151a;
-    }
-}
-
-/* ─────────────────────────────────────────────── */
-/* 🔖 VARIABLES SEMÁNTICAS: Usadas en la UI */
-/* ─────────────────────────────────────────────── */
-:root {
     /* Fondos */
-    --bg-primary: var(--surface-50);
-    --bg-elevated: var(--london-100);
-    --bg-muted: var(--waikawa-100);
-    --bg-strong: var(--ebony-900);
-    --bg-nav-active: var(--waikawa-500);
-    --bg-header-mobile: var(--bg-elevated);
+    --bg-primary: #f9fafb;
+    --bg-muted: #dbe3f0;
+    --bg-elevated: #f0e9f3;
+    --bg-header-mobile: #f0e9f3;
+    --bg-nav-active: #6574aa;
+    --bg-strong: #1b212a;
 
     /* Texto */
-    --text-primary: var(--ebony-700);
-    --text-secondary: var(--waikawa-500);
-    --text-secondary-muted: color-mix(in srgb, var(--text-secondary) 60%, transparent);
+    --text-primary: #242b36;
+    --text-secondary: #6574aa;
+    --text-secondary-muted: color-mix(in srgb, #6574aa 60%, transparent);
     --text-inverse: #ffffff;
 
     /* Bordes */
-    --border-default: var(--waikawa-300);
-    --border-strong: var(--waikawa-500);
+    --border-default: #9aa6c5;
+    --border-strong: #6574aa;
 
     /* Sombra */
     --shadow-elevated: 0 8px 16px rgba(0, 0, 0, 0.08);
     --shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.12);
 
     /* Acciones */
-    --accent: var(--danube-500);
-    --accent-hover: var(--danube-700);
-    --danger: var(--coral-500);
-    --danger-hover: var(--coral-700);
+    --accent: #6da7cb;
+    /* botones, enlaces primarios */
+    --accent-hover: #497aa0;
+    --danger: #f78c6b;
+    --danger-hover: #d4684a;
 
-    /* Alertas adicionales */
+    /* Alertas */
     --success: #3aa78d;
     --success-bg: #d2f4ed;
     --warning: #d9a548;
@@ -111,6 +44,45 @@
 
     /* Foco accesible */
     --focus-ring: 0 0 0 3px rgba(109, 167, 203, 0.45);
+}
+/* ─────────────────────────────────────────────── */
+/* 🌙 MODO OSCURO: Override completo */
+/* ─────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Fondos */
+        --bg-primary: #12151a;
+        --bg-muted: #2e3447;
+        --bg-elevated: #2f2a30;
+        --bg-header-mobile: #2f2a30;
+        --bg-nav-active: #55638f;
+        --bg-strong: #2f3640;
+
+        /* Texto */
+        --text-primary: #e5e7eb;
+        --text-secondary: #a1acc3;
+        --text-secondary-muted: color-mix(in srgb, #a1acc3 60%, transparent);
+        --text-inverse: #ffffff;
+
+        /* Bordes */
+        --border-default: #3f4a63;
+        --border-strong: #55638f;
+
+        /* Acciones */
+        --accent: #5a8db3;
+        --accent-hover: #3d6a89;
+        --danger: #d97a5f;
+        --danger-hover: #f2a792;
+
+        /* Alertas */
+        --success: #3aa78d;
+        --success-bg: #1c3931;
+        --warning: #d9a548;
+        --warning-bg: #3f361c;
+
+        /* Foco accesible */
+        --focus-ring: 0 0 0 3px rgba(90, 141, 179, 0.45);
+    }
 }
 /* ─────────────────────────────────────────────── */
 /* ✍️ TIPOGRAFÍA: Fuente base moderna */
