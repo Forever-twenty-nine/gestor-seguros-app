@@ -6,10 +6,13 @@ import { AseguradorasService } from '../../../services/aseguradoras.service';
 import { PolizasService } from '../../../services/polizas.service';
 import { FieldMeta } from '../../../utils/form-utils';
 import { DropdownSelect } from '../dropdown-select/dropdown-select';
+import { DatePicker } from '../date-picker/date-picker';
+import { DatetimePicker } from '../datetime-picker/datetime-picker';
+
 
 @Component({
   selector: 'app-table-form',
-  imports: [CommonModule, ReactiveFormsModule, DropdownSelect],
+  imports: [CommonModule, ReactiveFormsModule, DropdownSelect, DatePicker, DatetimePicker],
   templateUrl: './table-form.html'
 })
 export class TableForm {

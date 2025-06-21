@@ -1,55 +1,53 @@
-<div class="p-6 md:p-10 max-w-6xl mx-auto grid gap-8 text-gray-900">
-    <!-- Cards superiores con animación -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" @fadeSlide>
-        <div class="rounded-xl px-6 py-4 text-center shadow-lg bg-gradient-to-r from-green-400 to-green-600 text-white">
-            <h3 class="text-sm uppercase font-semibold tracking-wider">Activas</h3>
-            <p class="text-3xl font-bold">{{ activas() }}</p>
-        </div>
-        <div
-            class="rounded-xl px-6 py-4 text-center shadow-lg bg-gradient-to-r from-yellow-400 to-yellow-600 text-white">
-            <h3 class="text-sm uppercase font-semibold tracking-wider">Por vencer</h3>
-            <p class="text-3xl font-bold">{{ porVencer() }}</p>
-        </div>
-        <div class="rounded-xl px-6 py-4 text-center shadow-lg bg-gradient-to-r from-red-400 to-red-600 text-white">
-            <h3 class="text-sm uppercase font-semibold tracking-wider">Vencidas</h3>
-            <p class="text-3xl font-bold">{{ vencidas() }}</p>
-        </div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 py-8 animate-fade-in">
+
+    <!-- 📊 Tarjetas de resumen de pólizas -->
+    <div @fadeSlide class="bg-[var(--bg-elevated)] rounded-xl shadow-md p-5">
+        <h3 class="text-[var(--text-secondary)] text-sm font-semibold mb-2">Pólizas activas</h3>
+        <p class="text-3xl font-bold text-[var(--accent)]">{{ activas() }}</p>
     </div>
 
-    <!-- Alertas pendientes -->
-    @if (clientesConAlertas().length > 0) {
-    <section @fadeSlide class="bg-white shadow rounded-xl p-4">
-        <div class="flex justify-between items-center mb-3">
-            <h2 class="text-base font-semibold text-gray-800">Alertas pendientes</h2>
-            <a routerLink="/alertas"
-                class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
-                Ver todas
-            </a>
-        </div>
-        <ul class="text-sm divide-y">
-            @for (cliente of clientesConAlertas().slice(0, 3); track cliente.id) {
-            <li class="py-2">{{ cliente.nombre }}</li>
-            }
-        </ul>
-    </section>
-    }
+    <div @fadeSlide class="bg-[var(--bg-elevated)] rounded-xl shadow-md p-5">
+        <h3 class="text-[var(--text-secondary)] text-sm font-semibold mb-2">Pólizas por vencer</h3>
+        <p class="text-3xl font-bold text-yellow-600">{{ porVencer() }}</p>
+    </div>
 
-    <!-- Siniestros activos -->
-    @if (clientesConSiniestros().length > 0) {
-    <section @fadeSlide class="bg-white shadow rounded-xl p-4">
-        <div class="flex justify-between items-center mb-3">
-            <h2 class="text-base font-semibold text-gray-800">Siniestros activos</h2>
-            <a routerLink="/siniestros"
-                class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
-                Ver todos
-            </a>
-        </div>
-        <ul class="text-sm divide-y">
-            @for (cliente of clientesConSiniestros().slice(0, 3); track cliente.id) {
-            <li class="py-2">{{ cliente.nombre }}</li>
+    <div @fadeSlide class="bg-[var(--bg-elevated)] rounded-xl shadow-md p-5">
+        <h3 class="text-[var(--text-secondary)] text-sm font-semibold mb-2">Pólizas vencidas</h3>
+        <p class="text-3xl font-bold text-[var(--danger)]">{{ vencidas() }}</p>
+    </div>
+
+    <!-- 🔔 Alertas -->
+    <div @fadeSlide class="md:col-span-2 bg-[var(--bg-elevated)] rounded-xl shadow-md p-5">
+        <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4">Clientes con alertas pendientes</h3>
+        <ul class="space-y-2">
+            @for (cliente of clientesConAlertas(); track cliente.id) {
+            <li
+                class="flex justify-between items-center bg-[var(--bg-primary)] rounded-md px-4 py-2 border border-[var(--border-default)]">
+                <span class="text-[var(--text-primary)]">{{ cliente.nombre }}</span>
+                <a [routerLink]="['/clientes']" class="text-[var(--accent)] text-sm hover:underline">Ver cliente</a>
+            </li>
+            }
+            @if (clientesConAlertas().length === 0) {
+            <li class="text-sm text-[var(--text-secondary-muted)] italic">Sin alertas pendientes</li>
             }
         </ul>
-    </section>
-    }
+    </div>
+
+    <!-- 🚨 Siniestros -->
+    <div @fadeSlide class="md:col-span-3 bg-[var(--bg-elevated)] rounded-xl shadow-md p-5">
+        <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4">Clientes con siniestros activos</h3>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            @for (cliente of clientesConSiniestros(); track cliente.id) {
+            <li class="bg-[var(--bg-primary)] rounded-lg p-4 border border-[var(--border-default)] shadow-sm">
+                <p class="font-semibold text-[var(--text-primary)] mb-1">{{ cliente.nombre }}</p>
+                <a [routerLink]="['/clientes']" class="text-sm text-[var(--accent)] hover:underline">Ir al cliente</a>
+            </li>
+            }
+            @if (clientesConSiniestros().length === 0) {
+            <li class="text-sm text-[var(--text-secondary-muted)] italic">Sin siniestros activos</li>
+            }
+        </ul>
+    </div>
+
 </div>
   

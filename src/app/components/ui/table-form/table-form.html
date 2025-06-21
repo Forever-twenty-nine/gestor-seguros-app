@@ -7,7 +7,7 @@
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-xl font-semibold">{{ title }}</h2>
       <button (click)="cerrar.emit()"
-        class="text-[var(--text-secondary)] hover:text-[var(--accent)] text-lg font-bold transition" title="Cerrar">
+        class="text-[var(--text-inverse)] hover:text-[var(--accent)] text-lg font-bold transition" title="Cerrar">
         ✕
       </button>
     </div>
@@ -24,10 +24,14 @@
       }
 
       @else if (campo.readonly) {
-      <div class="w-full px-3 py-2 bg-[var(--bg-muted)] rounded text-sm md:col-span-2">
-        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">{{ campo.label }}</label>
-        {{ getValorMostrado(campo.name) }}
-      </div>
+      @if (!['select', 'datetime', 'date', 'textarea'].includes(campo.type ?? '')) {
+      <label [for]="campo.name" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
+                           peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
+                           peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
+        {{ campo.label }}
+      </label>
+      }
+
       }
 
       @else {
@@ -48,40 +52,45 @@
           [value]="form.get(campo.name)?.value" (valueChange)="form.get(campo.name)?.setValue($event)" />
         }
         }
-
         }
-
         @case ('select') {
-        <!-- Reemplaza el select -->
+        <!-- Select -->
         <app-dropdown-select [label]="campo.label" [options]="getOpcionesNormalizadas(campo)"
           [value]="form.get(campo.name)?.value" (valueChange)="form.get(campo.name)?.setValue($event)" />
         }
-
+        <!-- fechas-->
         @case ('datetime') {
-        <input type="datetime-local" [formControlName]="campo.name" id="{{ campo.name }}" class="w-full px-3 py-2.5 text-sm rounded-lg bg-white border border-[var(--border-default)]
-        text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
-        transition-all duration-150 ease-in-out" />
+        <app-datetime-picker [label]="campo.label" [value]="form.get(campo.name)?.value"
+          (valueChange)="form.get(campo.name)?.setValue($event)" />
         }
-
+        <!-- fecha -->
+        @case ('date') {
+        <app-date-picker [label]="campo.label" [value]="form.get(campo.name)?.value"
+          (valueChange)="form.get(campo.name)?.setValue($event)" />
+        }
+        <!--File -->
         @case ('file') {
         <input type="file" [formControlName]="campo.name" id="{{ campo.name }}" class="peer w-full pt-6 pb-2 px-3 border rounded-lg
-                 border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
-                 [class.border-[var(--danger)]]='form.get(campo.name)?.touched && form.get(campo.name)?.invalid'" />
+                  bg-[var(--bg-primary)] text-[var(--text-primary)]
+                  border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+                  [class.border-[var(--danger)]]='form.get(campo.name)?.touched && form.get(campo.name)?.invalid'" />
         }
-
+        <!--texto -->
         @default {
-        <input [type]="campo.type || 'text'" [formControlName]="campo.name" id="{{ campo.name }}" class="w-full px-3 py-2.5 text-sm rounded-lg bg-white border border-[var(--border-default)]
+        <input [type]="campo.type || 'text'" [formControlName]="campo.name" id="{{ campo.name }}" class="w-full px-3 py-2.5 text-sm rounded-lg bg-[var(--bg-primary)] border border-[var(--border-strong)]
         text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
         transition-all duration-150 ease-in-out" />
         }
         }
 
-        <!-- 🏷 Label flotante -->
+        <!-- 🏷 Label flotante solo si el tipo no es manejado por componente con label propio -->
+        @if (!['select', 'datetime', 'date', 'textarea'].includes(campo.type ?? '')) {
         <label [for]="campo.name" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
                  peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
                  peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
           {{ campo.label }}
         </label>
+        }
 
         <!-- 🚫 Validaciones -->
         @if (form.get(campo.name)?.touched && form.get(campo.name)?.invalid) {
@@ -118,7 +127,7 @@
     <div class="mt-6 flex justify-end gap-2">
       @if (showCancelar) {
       <button (click)="cerrar.emit()"
-        class="px-4 py-2 rounded bg-[var(--bg-muted)] hover:bg-[color-mix(in srgb, var(--bg-muted) 80%, black)] text-sm text-[var(--text-primary)] transition">
+        class="px-4 py-2 rounded bg-[var(--bg-muted)] hover:bg-[color-mix(in srgb, var(--bg-muted) 80%, black)] hover:brightness-90 text-sm text-[var(--text-primary)] transition">
         {{ textCancelar }}
       </button>
       }

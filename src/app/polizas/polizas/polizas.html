@@ -1,55 +1,34 @@
-<!-- Encabezado -->
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-xl font-bold">Pólizas</h1>
+<!-- 📦 Contenedor general -->
+<div class="px-4 md:px-8 pt-6 space-y-6">
+
+  <!-- 🧭 Título de sección -->
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+    <h1 class="text-2xl font-bold text-ebony-700 tracking-tight">Pólizas</h1>
+  </div>
+
+  <!-- 🧾 Tabla principal -->
+  <app-table [headers]="columnas" [displayedColumns]="campos" [rows]="polizas()" [actions]="acciones"
+    [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nueva póliza'" [pageSize]="10"
+    (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)"></app-table>
+
+  <!-- 🔍 Modal de detalle -->
+  @if (polizaSeleccionada(); as poliza) {
+  <app-table-detail [item]="poliza" entity="poliza" title="Detalle de la póliza" (cerrar)="cerrarDetalle()" />
+  }
+
+  <!-- ✍️ Modal de formulario -->
+  @if (formularioVisible()) {
+  <app-table-form [title]="modoEdicion() ? 'Editar Póliza' : 'Nueva Póliza'"
+    [textGuardar]="modoEdicion() ? 'Guardar cambios' : 'Crear póliza'" [textCancelar]="'Cancelar'" [showGuardar]="true"
+    [disableGuardar]="form.invalid" [form]="form" [fields]="formFields" (cerrar)="cerrarFormulario()"
+    (guardar)="guardarFormulario()" />
+  }
+
+  <!-- 🗑️ Modal de confirmación -->
+  @if (polizaParaEliminar(); as poliza) {
+  <app-table-confirm title="¿Eliminar póliza?"
+    [message]="'¿Estás seguro de eliminar la póliza ' + poliza.numero + '?'" textCancelar="Cancelar"
+    textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()" (confirmar)="confirmarEliminacion()" />
+  }
+
 </div>
-
-<!-- Tabla de pólizas -->
-<app-table
-  [headers]="columnas"
-  [displayedColumns]="campos"
-  [rows]="polizas()"
-  [actions]="acciones"
-  [enableSearch]="true"
-  [showNuevo]="true"
-  [nuevoLabel]="'Nueva póliza'"
-  [pageSize]="10"
-  (nuevoClick)="abrirFormulario()"
-  (actionClick)="manejarAccion($event)"
-/>
-
-<!-- Detalle de póliza -->
-@if (polizaSeleccionada; as poliza) {
-  <app-table-detail
-    [item]="poliza"
-    entity="poliza"
-    title="Detalle de la póliza"
-    (cerrar)="cerrarDetalle()"
-  />
-}
-
-<!-- Formulario de póliza -->
-@if (formularioVisible) {
-  <app-table-form
-    [title]="modoEdicion ? 'Editar Póliza' : 'Nueva Póliza'"
-    [textGuardar]="modoEdicion ? 'Guardar cambios' : 'Crear póliza'"
-    [textCancelar]="'Cancelar'"
-    [showGuardar]="true"
-    [disableGuardar]="form.invalid"
-    [form]="form"
-    [fields]="formFields"
-    (cerrar)="cerrarFormulario()"
-    (guardar)="guardarFormulario()"
-  />
-}
-
-<!-- Confirmación de eliminación -->
-@if (polizaParaEliminar; as poliza) {
-  <app-table-confirm
-    title="¿Eliminar póliza?"
-    [message]="'¿Estás seguro de eliminar la póliza ' + poliza.numero + '?'"
-    textCancelar="Cancelar"
-    textConfirmar="Eliminar"
-    (cancelar)="cancelarEliminacion()"
-    (confirmar)="confirmarEliminacion()"
-  />
-}

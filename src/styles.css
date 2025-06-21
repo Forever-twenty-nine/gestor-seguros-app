@@ -49,6 +49,7 @@
 /* 🌙 MODO OSCURO: Override completo */
 /* ─────────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
+    
     :root {
         /* Fondos */
         --bg-primary: #12151a;
@@ -83,11 +84,21 @@
         /* Foco accesible */
         --focus-ring: 0 0 0 3px rgba(90, 141, 179, 0.45);
     }
+    /* Estilos específicos para modo oscuro */
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        display: none;
+    }
+        input:-webkit-autofill {
+            background-color: var(--bg-primary) !important;
+            -webkit-box-shadow: 0 0 0px 1000px var(--bg-primary) inset !important;
+            -webkit-text-fill-color: var(--text-primary) !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
 }
 /* ─────────────────────────────────────────────── */
-/* ✍️ TIPOGRAFÍA: Fuente base moderna */
+/* ✍️ TIPOGRAFÍA: Fuente base y tamaños */
 /* ─────────────────────────────────────────────── */
-
 :root {
     /* Familias tipográficas */
     --font-base: 'Manrope', system-ui, sans-serif;

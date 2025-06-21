@@ -1,11 +1,12 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
+
 import { UserService } from '../../../services/user.service';
 import { EmpresaService } from '../../../services/empresa.service';
 import { ToastService } from '../../../services/toast.service';
 import { Router } from '@angular/router';
-import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-perfil-cuenta',
@@ -14,6 +15,7 @@ import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
   templateUrl: './perfil-cuenta.html',
 })
 export class PerfilCuenta {
+  // 🧩 Servicios
   private fb = inject(FormBuilder);
   private firestore = inject(Firestore);
   private userService = inject(UserService);
@@ -21,11 +23,17 @@ export class PerfilCuenta {
   private toast = inject(ToastService);
   private router = inject(Router);
 
+  // 👤 Datos del usuario actual
   readonly usuario = signal(this.userService.usuario());
+
+  // 🏢 Empresa asociada (signal reactiva)
   readonly empresa = this.empresaService.empresa;
+
+  // 🔄 Estados de UI
   readonly cargando = signal(false);
   readonly empresaCargada = computed(() => !!this.empresa());
 
+  // 📝 Formulario reactivo para cuenta
   readonly form = this.fb.group({
     nombreUsuario: ['', [Validators.required, Validators.maxLength(50)]],
     nombreEmpresa: ['', [Validators.required, Validators.maxLength(50)]],
@@ -37,13 +45,14 @@ export class PerfilCuenta {
   });
 
   constructor() {
-    // Cargar empresa desde Firestore si hace falta
+    // 📥 Cargar empresa si no está
     effect(() => this.loadEmpresaIfNeeded());
 
-    // Sincronizar formulario cuando hay datos
+    // 🔁 Sincronizar formulario con datos
     effect(() => this.syncFormWithEmpresa());
   }
 
+  // 📦 Si falta empresa en memoria, cargarla desde Firestore
   private loadEmpresaIfNeeded() {
     const u = this.usuario();
     const e = this.empresa();
@@ -53,6 +62,7 @@ export class PerfilCuenta {
     }
   }
 
+  // 🔃 Actualizar formulario con datos actuales
   private syncFormWithEmpresa() {
     const u = this.usuario();
     const e = this.empresa();
@@ -69,13 +79,15 @@ export class PerfilCuenta {
       });
     }
   }
-  // Resetear formulario
+
+  // 💾 Guardar todos los cambios
   async guardarTodo() {
     const u = this.usuario();
     const e = this.empresa();
     if (!u || !e || this.form.invalid) return;
 
     this.cargando.set(true);
+
     const { nombreUsuario, nombreEmpresa, diasAnticipacion, metodos } = this.form.value;
 
     const metodosSeleccionados: ('email' | 'visual')[] = [];
@@ -85,10 +97,12 @@ export class PerfilCuenta {
     try {
       const sinNombreInicial = !e.nombre?.trim();
 
+      // 🔧 Actualizar nombre del usuario
       await updateDoc(doc(this.firestore, 'users', u.id), {
         nombre: nombreUsuario ?? '',
       });
 
+      // 🏢 Actualizar configuración de la empresa
       await updateDoc(doc(this.firestore, 'empresas', e.id), {
         nombre: nombreEmpresa ?? '',
         configAlertas: {
@@ -97,11 +111,18 @@ export class PerfilCuenta {
         },
       });
 
-      this.userService.setUsuario({ ...u, nombre: nombreUsuario ?? '', empresaNombre: nombreEmpresa ?? '' });
-      await this.empresaService.cargarEmpresaDesdeFirestore(e.id);
+      // 🧠 Actualizar estado local del usuario
+      this.userService.setUsuario({
+        ...u,
+        nombre: nombreUsuario ?? '',
+        empresaNombre: nombreEmpresa ?? ''
+      });
 
+      // 🔄 Refrescar datos de empresa
+      await this.empresaService.cargarEmpresaDesdeFirestore(e.id);
       this.toast.show('Cuenta actualizada correctamente', 'success');
 
+      // 🚀 Bienvenida en primer uso
       if (sinNombreInicial && nombreEmpresa?.trim()) {
         this.toast.show('Bienvenido/a, ¡tu cuenta está lista para comenzar!', 'success');
         setTimeout(() => this.router.navigateByUrl('/dashboard'), 1000);
@@ -114,6 +135,7 @@ export class PerfilCuenta {
     }
   }
 
+  // 👥 Usuarios permitidos por plan
   getUsuariosPermitidos() {
     const plan = this.empresa()?.plan;
     return plan === 'free' ? 1 : plan === 'basic' ? 3 : 5;

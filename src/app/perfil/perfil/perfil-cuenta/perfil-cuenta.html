@@ -1,91 +1,91 @@
 @if (empresaCargada()) {
-<div class="max-w-4xl mx-auto px-4 py-8 space-y-8 overflow-y-auto">
+<div class="max-w-4xl mx-auto px-4 md:px-8 py-8 space-y-10 bg-[var(--bg-primary)] text-[var(--text-primary)]">
+
   <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <!-- 🧑 Mi perfil -->
-    <div class="space-y-6">
 
-      <!-- 📛 Nombre del usuario -->
-      <div class="relative">
-        <input id="nombreUsuario" type="text" placeholder=" " formControlName="nombreUsuario" maxlength="50"
-          class="peer w-full pt-6 pb-2 px-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
-          [class.border-red-500]="form.get('nombreUsuario')?.touched && form.get('nombreUsuario')?.invalid" />
-        <label for="nombreUsuario" class="absolute left-3 -top-2 px-1 text-sm bg-white text-gray-500 transition-all
-            peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
-            peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-600">
-          Nombre completo
+    <!-- 🧑 Nombre del usuario -->
+    <div class="relative">
+      <input id="nombreUsuario" type="text" placeholder=" " formControlName="nombreUsuario" maxlength="50" class="peer w-full pt-6 pb-2 px-3 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-default)]
+                 text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+        [class.border-[var(--danger)]]="form.get('nombreUsuario')?.touched && form.get('nombreUsuario')?.invalid" />
+      <label for="nombreUsuario" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
+                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
+                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
+        Nombre completo
+      </label>
+      @if (form.get('nombreUsuario')?.touched && form.get('nombreUsuario')?.invalid) {
+      <p class="text-sm text-[var(--danger)] mt-1 ml-1">🚫 Campo obligatorio (máx. 50 caracteres)</p>
+      }
+    </div>
+
+    <!-- 🏢 Nombre de la empresa -->
+    <div class="relative">
+      <input id="nombreEmpresa" type="text" placeholder=" " formControlName="nombreEmpresa" maxlength="50" class="peer w-full pt-6 pb-2 px-3 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-default)]
+                 text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+        [class.border-[var(--danger)]]="form.get('nombreEmpresa')?.touched && form.get('nombreEmpresa')?.invalid" />
+      <label for="nombreEmpresa" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
+                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
+                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
+        Nombre de la empresa
+      </label>
+      @if (form.get('nombreEmpresa')?.touched && form.get('nombreEmpresa')?.invalid) {
+      <p class="text-sm text-[var(--danger)] mt-1 ml-1">🚫 Campo obligatorio (máx. 50 caracteres)</p>
+      }
+    </div>
+
+    <!-- ⏰ Días de anticipación -->
+    <div class="relative">
+      <input id="diasAnticipacion" type="number" placeholder=" " formControlName="diasAnticipacion" min="1" max="90"
+        class="peer w-full pt-6 pb-2 px-3 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-default)]
+                 text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+        [class.border-[var(--danger)]]="form.get('diasAnticipacion')?.touched && form.get('diasAnticipacion')?.invalid" />
+      <label for="diasAnticipacion" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
+                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
+                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
+        Días de anticipación para alertas
+      </label>
+      @if (form.get('diasAnticipacion')?.touched && form.get('diasAnticipacion')?.invalid) {
+      <p class="text-sm text-[var(--danger)] mt-1 ml-1">🚫 Valor entre 1 y 90 requerido</p>
+      }
+    </div>
+
+    <!-- 🔔 Métodos de alerta -->
+    <div>
+      <p class="text-sm font-medium text-[var(--text-secondary)] mb-2">Métodos de alerta</p>
+      <div formGroupName="metodos" class="flex flex-col gap-2 ml-1">
+        <label class="inline-flex items-center gap-2 text-sm">
+          <input type="checkbox" formControlName="email" class="accent-[var(--accent)]" />
+          Email
         </label>
-        @if (form.get('nombreUsuario')?.touched && form.get('nombreUsuario')?.invalid) {
-        <p class="text-sm text-red-600 mt-1 ml-1">🚫 Campo obligatorio (máx. 50 caracteres)</p>
-        }
-      </div>
-
-      <!-- 🏢 Nombre de la empresa -->
-      <div class="relative">
-        <input id="nombreEmpresa" type="text" placeholder=" " formControlName="nombreEmpresa" maxlength="50"
-          class="peer w-full pt-6 pb-2 px-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
-          [class.border-red-500]="form.get('nombreEmpresa')?.touched && form.get('nombreEmpresa')?.invalid" />
-        <label for="nombreEmpresa" class="absolute left-3 -top-2 px-1 text-sm bg-white text-gray-500 transition-all
-            peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
-            peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-600">
-          Nombre de la empresa
+        <label class="inline-flex items-center gap-2 text-sm">
+          <input type="checkbox" formControlName="visual" class="accent-[var(--accent)]" />
+          Visual en app
         </label>
-        @if (form.get('nombreEmpresa')?.touched && form.get('nombreEmpresa')?.invalid) {
-        <p class="text-sm text-red-600 mt-1 ml-1">🚫 Campo obligatorio (máx. 50 caracteres)</p>
-        }
-      </div>
-
-      <!-- ⏰ Días de anticipación -->
-      <div class="relative">
-        <input id="diasAnticipacion" type="number" placeholder=" " formControlName="diasAnticipacion" min="1" max="90"
-          class="peer w-full pt-6 pb-2 px-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
-          [class.border-red-500]="form.get('diasAnticipacion')?.touched && form.get('diasAnticipacion')?.invalid" />
-        <label for="diasAnticipacion" class="absolute left-3 -top-2 px-1 text-sm bg-white text-gray-500 transition-all
-            peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
-            peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-600">
-          Días de anticipación para alertas
-        </label>
-        @if (form.get('diasAnticipacion')?.touched && form.get('diasAnticipacion')?.invalid) {
-        <p class="text-sm text-red-600 mt-1 ml-1">🚫 Valor entre 1 y 90 requerido</p>
-        }
-      </div>
-
-      <!-- 🔔 Métodos de alerta -->
-      <div>
-        <p class="text-sm font-medium text-gray-700 mb-2">Métodos de alerta</p>
-        <div formGroupName="metodos" class="flex flex-col gap-2 ml-1">
-          <label class="inline-flex items-center gap-2">
-            <input type="checkbox" formControlName="email" class="accent-blue-600" />
-            Email
-          </label>
-          <label class="inline-flex items-center gap-2">
-            <input type="checkbox" formControlName="visual" class="accent-blue-600" />
-            Visual en app
-          </label>
-        </div>
       </div>
     </div>
 
     <!-- 📦 Plan actual -->
     <div class="space-y-4">
-      <section>
-        <h2 class="text-lg font-bold text-gray-700 mb-2">Plan actual</h2>
-        <p>Tipo: <strong>{{ empresa()?.plan }}</strong></p>
-        <p>Pólizas usadas: <strong>{{ empresa()?.polizaCount }} / {{ empresa()?.limitePolizas }}</strong></p>
-        <p>Usuarios permitidos: <strong>{{ getUsuariosPermitidos() }}</strong></p>
-      </section>
+      <h2 class="text-lg font-semibold text-[var(--text-secondary)]">Plan actual</h2>
+      <p>Tipo: <strong>{{ empresa()?.plan }}</strong></p>
+      <p>Pólizas usadas: <strong>{{ empresa()?.polizaCount }} / {{ empresa()?.limitePolizas }}</strong></p>
+      <p>Usuarios permitidos: <strong>{{ getUsuariosPermitidos() }}</strong></p>
     </div>
+
   </form>
 
   <!-- 💾 Botón guardar -->
-  <div class="text-end pt-4">
-    <button (click)="guardarTodo()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+  <div class="text-end pt-6">
+    <button (click)="guardarTodo()"
+      class="px-6 py-2 rounded bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-inverse)] text-sm disabled:opacity-50 transition"
       [disabled]="form.invalid || cargando()">
       {{ cargando() ? 'Guardando...' : 'Guardar cambios' }}
     </button>
   </div>
+
 </div>
 } @else {
-<div class="py-16 text-center text-gray-500">
-  Cargando datos de la empresa...
-</div>
+<!-- 🕒 Estado de carga -->
+<div class="py-20 text-center text-[var(--text-secondary-muted)]">Cargando datos de la empresa...</div>
 }
+  

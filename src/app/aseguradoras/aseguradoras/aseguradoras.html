@@ -1,62 +1,44 @@
-<!-- Encabezado y botón agregar -->
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-xl font-bold">Aseguradoras</h1>
-</div>
+<!-- 📦 Contenedor principal con padding y separación -->
+<div class="px-4 md:px-8 pt-6 space-y-6">
 
-<!-- Tabla -->
-<app-table
-  [headers]="columnas"
-  [displayedColumns]="campos"
-  [rows]="aseguradoras()"
-  [actions]="acciones"
-  [enableSearch]="true"
-  [showNuevo]="true"
-  [nuevoLabel]="'Nueva aseguradora'"
-  [pageSize]="10"
-  (nuevoClick)="abrirFormulario()"
-  (actionClick)="manejarAccion($event)">
-</app-table>
+  <!-- 🧭 Encabezado -->
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+    <h1 class="text-2xl font-bold text-ebony-700 tracking-tight">Aseguradoras</h1>
+  </div>
 
-<!-- Modal de detalle -->
-@if (aseguradoraSeleccionada) {
-  <app-table-detail
-    [item]="aseguradoraSeleccionada"
-    title="Detalle de Aseguradora"
-    entity="aseguradora"
-    (cerrar)="cerrarDetalle()">
+  <!-- 🧾 Tabla principal -->
+  <app-table [headers]="columnas" [displayedColumns]="campos" [rows]="aseguradoras()" [actions]="acciones"
+    [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nueva aseguradora'" [pageSize]="10"
+    (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)">
+  </app-table>
 
-    <!-- Detalle extra: Logo -->
-    @if (aseguradoraSeleccionada.logoUrl) {
-      <div detalle-extra class="mt-4 text-center">
-        <img [src]="aseguradoraSeleccionada.logoUrl" alt="Logo"
-             class="mx-auto w-32 h-20 object-contain border bg-white rounded shadow" />
-      </div>
+  <!-- 👁️ Detalle de aseguradora -->
+  @if (aseguradoraSeleccionada(); as aseg) {
+  <app-table-detail [item]="aseg" title="Detalle de Aseguradora" entity="aseguradora" (cerrar)="cerrarDetalle()">
+
+    <!-- 🖼️ Logo si existe -->
+    @if (aseg.logoUrl) {
+    <div detalle-extra class="mt-6 text-center">
+      <img [src]="aseg.logoUrl" alt="Logo" class="mx-auto w-32 h-20 object-contain border bg-white rounded shadow" />
+    </div>
     }
 
   </app-table-detail>
-}
+  }
 
-<!-- Modal de formulario -->
-@if (formularioVisible) {
-  <app-table-form
-    [title]="modoEdicion ? 'Editar Aseguradora' : 'Nueva Aseguradora'"
-    [textGuardar]="modoEdicion ? 'Guardar cambios' : 'Crear aseguradora'"
-    [textCancelar]="'Cancelar'"
-    [showGuardar]="true"
-    [disableGuardar]="aseguradoraForm.invalid"
-    [form]="aseguradoraForm"
-    [fields]="formFields"
-    (cerrar)="cerrarFormulario()"
-    (guardar)="guardarFormulario()" />
-}
+  <!-- 📝 Formulario modal -->
+  @if (formularioVisible()) {
+  <app-table-form [title]="modoEdicion() ? 'Editar Aseguradora' : 'Nueva Aseguradora'"
+    [textGuardar]="modoEdicion() ? 'Guardar cambios' : 'Crear aseguradora'" [textCancelar]="'Cancelar'"
+    [showGuardar]="true" [disableGuardar]="form.invalid" [form]="form" [fields]="formFields"
+    (cerrar)="cerrarFormulario()" (guardar)="guardarFormulario()" />
+  }
 
-<!-- Confirmación de eliminación -->
-@if (aseguradoraParaEliminar) {
-  <app-table-confirm
-    title="¿Eliminar aseguradora?"
-    [message]="'¿Estás seguro de eliminar a ' + aseguradoraParaEliminar.nombre + '?'"
-    textCancelar="Cancelar"
-    textConfirmar="Eliminar"
-    (cancelar)="cancelarEliminacion()"
+  <!-- 🗑️ Confirmación de eliminación -->
+  @if (aseguradoraParaEliminar(); as aseg) {
+  <app-table-confirm title="¿Eliminar aseguradora?" [message]="'¿Estás seguro de eliminar a ' + aseg.nombre + '?'"
+    textCancelar="Cancelar" textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()"
     (confirmar)="confirmarEliminacion()" />
-}
+  }
+
+</div>

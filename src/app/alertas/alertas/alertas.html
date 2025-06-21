@@ -1,30 +1,35 @@
-<!-- Encabezado -->
-<div class="flex justify-between items-center mb-4">
-    <h1 class="text-xl font-bold">Alertas</h1>
+<!-- Contenedor general con padding horizontal -->
+<div class="px-4 md:px-8 pt-6 space-y-6">
+
+    <!-- 🧭 Encabezado y botón agregar -->
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+        <h1 class="text-2xl font-bold text-ebony-700 tracking-tight">Alertas</h1>
+    </div>
+
+    <!-- 🧾 Tabla principal -->
+    <app-table [headers]="columnas" [displayedColumns]="campos" [rows]="alertas()" [actions]="acciones"
+        [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nueva alerta'" [pageSize]="10" [fieldTypes]="fieldTypes"
+        (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)"></app-table>
+
+    <!-- 🔍 Modal de detalle -->
+    @if (alertaSeleccionada(); as alerta) {
+    <app-table-detail [item]="alerta" title="Detalle de la alerta" entity="alerta" (cerrar)="cerrarDetalle()" />
+    }
+
+    <!-- 📝 Modal de formulario -->
+    @if (formularioVisible()) {
+    <app-table-form [title]="modoEdicion() ? 'Editar alerta' : 'Nueva alerta'"
+        [textGuardar]="modoEdicion() ? 'Guardar cambios' : 'Crear alerta'" [textCancelar]="'Cancelar'"
+        [showGuardar]="true" [disableGuardar]="form.invalid" [form]="form" [fields]="formFields"
+        (cerrar)="cerrarFormulario()" (guardar)="guardarFormulario()" />
+    }
+
+    <!-- 🗑️ Confirmación de eliminación -->
+    @if (alertaParaEliminar(); as alerta) {
+    <app-table-confirm title="¿Eliminar alerta?"
+        [message]="'¿Estás seguro de eliminar la alerta de tipo ' + alerta.tipo + '?'" textCancelar="Cancelar"
+        textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()" (confirmar)="confirmarEliminacion()" />
+    }
+
 </div>
-
-<!-- Tabla -->
-<app-table [headers]="columnas" [displayedColumns]="campos" [rows]="alertas()" [actions]="acciones"
-    [enableSearch]="true" [showNuevo]="true" [nuevoLabel]="'Nueva alerta'" [pageSize]="10" [fieldTypes]="fieldTypes"
-    (nuevoClick)="abrirFormulario()" (actionClick)="manejarAccion($event)"></app-table>
-
-<!-- Detalle -->
-@if (alertaSeleccionada) {
-<app-table-detail [item]="alertaSeleccionada" title="Detalle de la alerta" entity="alerta" (cerrar)="cerrarDetalle()" />
-}
-
-<!-- Formulario -->
-@if (formularioVisible) {
-<app-table-form [title]="modoEdicion ? 'Editar alerta' : 'Nueva alerta'"
-    [textGuardar]="modoEdicion ? 'Guardar cambios' : 'Crear alerta'" [textCancelar]="'Cancelar'" [showGuardar]="true"
-    [disableGuardar]="alertaForm.invalid" [form]="alertaForm" [fields]="formFields" (cerrar)="cerrarFormulario()"
-    (guardar)="guardarFormulario()" />
-}
-
-<!-- Confirmación de eliminación -->
-@if (alertaParaEliminar) {
-<app-table-confirm title="¿Eliminar alerta?"
-    [message]="'¿Estás seguro de eliminar la alerta de tipo ' + alertaParaEliminar.tipo + '?'" textCancelar="Cancelar"
-    textConfirmar="Eliminar" (cancelar)="cancelarEliminacion()" (confirmar)="confirmarEliminacion()" />
-}
   

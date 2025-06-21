@@ -1,87 +1,87 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-500 to-blue-100 flex items-center justify-center px-4">
+<div
+    class="min-h-screen bg-gradient-to-br from-[var(--accent)] to-[var(--bg-muted)] flex items-center justify-center px-4">
+
     <form [formGroup]="form" (ngSubmit)="submit()"
-        class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md space-y-6 border border-gray-200">
+        class="bg-[var(--bg-primary)] shadow-xl border border-[var(--border-default)] rounded-2xl p-8 w-full max-w-md space-y-6 animate-fade-in">
+
+        <!-- Encabezado -->
         <div class="text-center">
-            <h1 class="text-2xl font-bold text-gray-800 mb-1">Bienvenido</h1>
-            <p class="text-sm text-gray-500">Ingresá tus credenciales para continuar</p>
+            <h1 class="text-2xl font-bold text-[var(--text-primary)]">Bienvenido</h1>
+            <p class="text-sm text-[var(--text-secondary)]">Ingresá tus credenciales para continuar</p>
         </div>
 
-        <div class="space-y-6">
-            <!-- Campo: Email -->
-            <div class="relative">
-                <input type="email" formControlName="email" id="email" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border border-gray-300 rounded-lg
-           focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                <label for="email" class="absolute left-2 -top-2 px-1 text-sm bg-white text-gray-500 transition-all
-           peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
-           peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-600">
-                    Correo electrónico
-                </label>
-
-                @if (form.get('email')?.touched && form.get('email')?.invalid) {
-                <div class="text-sm text-red-600 mt-1 ml-1">
-                    @if (form.get('email')?.errors?.['required']) {
-                    El correo es obligatorio.
-                    } @else if (form.get('email')?.errors?.['email']) {
-                    Ingresá un correo válido.
-                    }
-                </div>
+        <!-- Email -->
+        <div class="relative">
+            <input type="email" formControlName="email" id="email" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)]
+                 border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+            <label for="email" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
+                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
+                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
+                Correo electrónico
+            </label>
+            @if (form.get('email')?.touched && form.get('email')?.invalid) {
+            <div class="text-sm text-[var(--danger)] mt-1 ml-1">
+                @if (form.get('email')?.errors?.['required']) {
+                El correo es obligatorio.
+                } @else if (form.get('email')?.errors?.['email']) {
+                Ingresá un correo válido.
                 }
             </div>
-
-            <!-- Campo: Contraseña -->
-            <div class="relative">
-                <input type="password" formControlName="password" id="password" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border border-gray-300 rounded-lg
-           focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                <label for="password" class="absolute left-2 -top-2 px-1 text-sm bg-white text-gray-500 transition-all
-           peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
-           peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-600">
-                    Contraseña
-                </label>
-
-                @if (form.get('password')?.touched && form.get('password')?.invalid) {
-                <div class="text-sm text-red-600 mt-1 ml-1">
-                    @if (form.get('password')?.errors?.['required']) {
-                    La contraseña es obligatoria.
-                    } @else if (form.get('password')?.errors?.['minlength']) {
-                    Debe tener al menos 6 caracteres.
-                    }
-                </div>
-                }
-            </div>
-
+            }
         </div>
 
-        <!-- Botón de enviar -->
+        <!-- Contraseña -->
+        <div class="relative">
+            <input type="password" formControlName="password" id="password" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)]
+                 border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+            <label for="password" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
+                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
+                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
+                Contraseña
+            </label>
+            @if (form.get('password')?.touched && form.get('password')?.invalid) {
+            <div class="text-sm text-[var(--danger)] mt-1 ml-1">
+                @if (form.get('password')?.errors?.['required']) {
+                La contraseña es obligatoria.
+                } @else if (form.get('password')?.errors?.['minlength']) {
+                Debe tener al menos 6 caracteres.
+                }
+            </div>
+            }
+        </div>
+
+        <!-- Botón iniciar sesión -->
         <button type="submit"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg w-full transition"
+            class="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-inverse)] py-3 rounded-lg font-medium transition"
             [disabled]="form.invalid || loading()">
             {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
         </button>
 
-
-        <div class="relative mt-4">
+        <!-- Divider -->
+        <div class="relative">
             <div class="absolute inset-0 flex items-center">
-                <div class="w-full border-t border-gray-300"></div>
+                <div class="w-full border-t border-[var(--border-default)]"></div>
             </div>
             <div class="relative flex justify-center text-sm">
-                <span class="bg-white px-2 text-gray-500">o continuá con</span>
+                <span class="bg-[var(--bg-primary)] px-2 text-[var(--text-secondary-muted)]">o continuá con</span>
             </div>
         </div>
 
+        <!-- Google login -->
         <button type="button" (click)="loginConGoogle()"
-            class="w-full mt-4 border border-gray-300 rounded-lg py-2 px-4 flex items-center justify-center gap-2 hover:bg-gray-100 transition">
+            class="w-full border border-[var(--border-default)] rounded-lg py-2 px-4 flex items-center justify-center gap-2 hover:bg-[var(--bg-muted)] transition">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
                 alt="Google" />
-            <span class="text-gray-700 font-medium">Google</span>
+            <span class="text-[var(--text-primary)] font-medium">Google</span>
         </button>
 
-
+        <!-- Acciones -->
         <div class="text-sm text-center space-y-2 mt-4">
-            <button type="button" class="text-blue-600 hover:underline" (click)="goTo('forgot-password')">
+            <button type="button" class="text-[var(--accent)] hover:underline" (click)="goTo('forgot-password')">
                 ¿Olvidaste tu contraseña?
             </button>
             <br />
-            <button type="button" class="text-gray-600 hover:underline" (click)="goTo('register')">
+            <button type="button" class="text-[var(--text-secondary)] hover:underline" (click)="goTo('register')">
                 Registrarse
             </button>
         </div>
